@@ -1,0 +1,14 @@
+Order Update Edit then order btn is not working = fixed
+If i payment from order details then i can not again payment with refresh = fixed
+Address Not update address update has problem = fixed
+
+
+admin can access the all branch 
+Manager Just one branch
+ 
+
+2, Branch = done
+1, User details and role update
+4, Research for restaurant expense ( Employee, Ingredients )
+Address problem
+
