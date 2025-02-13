@@ -30,7 +30,7 @@ query MyQuery($id: ID !) {
 `;
 
 export const ITEMS_QUERY = gql`
-query MyQuery($alertStock: Decimal, $category: Decimal, $first: Int, $offset: Int, $price: Decimal,  $stock: Decimal , $search: String,  $orderBy: String ) {
+query MyQuery($alertStock: Decimal, $category: Decimal, $first: Int, $offset: Int, $price: Decimal, $stock: Decimal, $search: String, $orderBy: String) {
   items(
     alertStock: $alertStock
     category: $category
@@ -60,7 +60,7 @@ query MyQuery($alertStock: Decimal, $category: Decimal, $first: Int, $offset: In
           name
         }
         sku
-        price
+        currentStock
       }
     }
   }
@@ -77,9 +77,9 @@ query MyQuery($id: ID!) {
     createdAt
     id
     name
-    price
     sku
     stock
+    currentStock
     unit {
       name
       id

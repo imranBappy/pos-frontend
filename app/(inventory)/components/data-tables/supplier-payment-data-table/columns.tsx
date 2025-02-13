@@ -5,16 +5,17 @@ import { ArrowUpDown } from "lucide-react";
 import moment from "moment";
 import { ActionsDropdown } from "./actions-dropdown";
 import Link from "next/link";
+import { toFixed } from "@/lib/utils";
 
 export const supplierPaymentColumns: ColumnDef<SUPPLIER_PAYMENT_TYPE>[] = [
     {
         accessorKey: "supplier",
         header: "Supplier",
         cell: ({ row }) => {
-            const supplier = row.original.supplier;
+            const supplier = row.original?.invoice?.supplier;
             return (
                 <Button variant={'link'}>
-                    <Link href={`/suppliers/${supplier.id}`} className="capitalize">{supplier.name}</Link>
+                    <Link href={`/suppliers/${supplier?.id ?? "#"}`} className="capitalize">{supplier?.name || "NA"}</Link>
                 </Button>
             );
         },
@@ -36,7 +37,7 @@ export const supplierPaymentColumns: ColumnDef<SUPPLIER_PAYMENT_TYPE>[] = [
         },
     },
     {
-        accessorKey: "amountPaid",
+        accessorKey: "amount",
         header: ({ column }) => (
             <Button
                 variant="ghost"
@@ -46,17 +47,12 @@ export const supplierPaymentColumns: ColumnDef<SUPPLIER_PAYMENT_TYPE>[] = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => row.getValue("amountPaid"), // Format as needed
+        cell: ({ row }) => toFixed(row.getValue("amount") ), // Format as needed
     },
     {
         accessorKey: "paymentMethod",
         header: "Payment Method",
         cell: ({ row }) => row.getValue("paymentMethod"),
-    },
-    {
-        accessorKey: "referenceNumber",
-        header: "Reference Number",
-        cell: ({ row }) => row.getValue("referenceNumber") || "N/A",
     },
     {
         accessorKey: "trxId",

@@ -26,20 +26,19 @@ interface DatePickerProps<T extends FieldValues> {
     placeholder?: string;
     name: Path<T>;
     label?: string;
+    description?: string,
+    disabled?: boolean
 }
-export function DatePicker<T extends FieldValues>({ form, name, placeholder = 'Pick a date', label }: DatePickerProps<T>) {
-
+export function DatePicker<T extends FieldValues>({ description, disabled = false, form, name, placeholder = 'Pick a date', label }: DatePickerProps<T>) {
     return (
-
         <FormField
-
             control={form.control}
             name={name}
             render={({ field }) => (
                 <FormItem className="flex flex-col mt-[10px]">
-                    <FormLabel>{label}</FormLabel>
+                    <FormLabel >{label}</FormLabel>
                     <Popover>
-                        <PopoverTrigger asChild>
+                        <PopoverTrigger disabled={disabled} asChild>
                             <FormControl>
                                 <Button
                                     variant={"outline"}
@@ -69,9 +68,12 @@ export function DatePicker<T extends FieldValues>({ form, name, placeholder = 'P
                             />
                         </PopoverContent>
                     </Popover>
-                    <FormDescription>
-                        Your date of birth is used to calculate your age.
-                    </FormDescription>
+                    {
+                        description ? <FormDescription>
+                            {description}
+                        </FormDescription> : <></>
+                    }
+
                     <FormMessage />
                 </FormItem>
             )}

@@ -17,10 +17,10 @@ export const itemColumns: ColumnDef<ITEM_TYPE>[] = [
         ),
     },
     {
-        accessorKey: "price",
-        header: "Price",
+        accessorKey: "currentStock",
+        header: "Current Stock",
         cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("price")}</div>
+            <div className="capitalize">{row.getValue("currentStock")}</div>
         ),
     },
 

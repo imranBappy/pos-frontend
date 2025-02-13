@@ -8,8 +8,9 @@ export interface ITEM_TYPE {
     unit: UNIT_TYPE;
     alertStock: string;
     sku: string;
-    price: number;
+ 
     stock: number;
     createdAt: string;
     updatedAt: string;
+    currentStock:number
 }

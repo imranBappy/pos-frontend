@@ -56,6 +56,7 @@ export const SupplierInvoiceDataTable = () => {
         supplier: node.supplier,
         createdAt: node.createdAt,
         updatedAt: node.updatedAt,
+        paidAmount: node.paidAmount,
     })) || [];
 
     const table = useReactTable({

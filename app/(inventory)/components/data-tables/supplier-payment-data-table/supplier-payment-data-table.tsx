@@ -45,18 +45,20 @@ export const SupplierPaymentDataTable = () => {
         }
     }
     );
-
+    console.log(res?.supplierPayments?.edges);
+    
     const supplierPayments: SUPPLIER_PAYMENT_TYPE[] = res?.supplierPayments?.edges?.map(({ node }: { node: SUPPLIER_PAYMENT_TYPE }) => ({ // Use SUPPLIER_PAYMENT_TYPE
         id: node.id,
         supplier: node.supplier,
         invoice: node.invoice,
-        amountPaid: node.amountPaid,
         paymentMethod: node.paymentMethod,
         referenceNumber: node.referenceNumber,
         trxId: node.trxId,
         status: node.status,
         createdAt: node.createdAt,
         updatedAt: node.updatedAt,
+        amount: node.amount,
+
     })) || [];
 
     const table = useReactTable({

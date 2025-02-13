@@ -11,6 +11,7 @@ export interface OPTION_TYPE {
     value: string;
     label: string;
     disabled?: boolean
+    unit?:string
 }
 
 interface SelectItemProps<T extends FieldValues> {

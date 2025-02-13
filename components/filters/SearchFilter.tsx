@@ -5,6 +5,8 @@ import { Separator } from "@/components/ui/separator"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { X } from "lucide-react"
+import { OPTION_TYPE } from "../input"
+import { ITEMS_TYPE } from "@/stores/slices"
 
 function SearchIcon() {
     return (
@@ -42,12 +44,9 @@ function debounce(func: (...args: unknown[]) => void, wait: number) {
 
 interface FilterProps {
     placeholder: string,
-    items: {
-        value: string,
-        label: string
-    }[],
-    selectedItems: Map<string, { quantity: number, price: number }>;
-    onSelect: (id: string, quantity: number, price: number) => void;
+    items: OPTION_TYPE[],
+    selectedItems: ITEMS_TYPE;
+    onSelect: (id: string, quantity: number, price: number, item?: string,) => void;
     onRemove: (id: string) => void;
 }
 
@@ -84,7 +83,7 @@ const SearchFilter = ({ placeholder = "Search...", onSelect, onRemove, selectedI
                                         className="flex items-center space-x-2"
                                     >
                                         <Checkbox
-                                            onClick={() => selectedItems.get(item.value) ? null : onSelect(item.value, 1, 0)}
+                                            onClick={() => selectedItems.get(item.value) ? null : onSelect(item.value, 1, 1, selectedItems.get(item.value)?.id)}
                                             id={item.value}
                                             checked={selectedItems.has(item.value)}
                                             name={item.value}
@@ -101,34 +100,35 @@ const SearchFilter = ({ placeholder = "Search...", onSelect, onRemove, selectedI
 
                                     </div>
 
-                                    <div className="flex gap-5">
-                                        <div className="flex gap-2 items-center">
+                                    <div className=" flex gap-7 ">
+                                        <div className=" flex gap-2 items-center  ">
                                             <label className=" text-sm" htmlFor={`price-${item.value}`}>Price: </label>
                                             <Input
                                                 id={`price-${item.value}`}
-                                                onChange={(e) => onSelect(item.value, selectedItems.get(item.value)?.quantity || 1, Number(e.target.value))}
+                                                onChange={(e) => onSelect(item.value, selectedItems.get(item.value)?.quantity || 1, Number(e.target.value), selectedItems.get(item.value)?.id)}
                                                 type="number"
                                                 min={0}
                                                 placeholder='Price'
                                                 name='price'
-                                                className='w-40 h-7'
+                                                className='w-24 h-7'
                                                 value={selectedItems.get(item.value)?.price || ""}
                                                 disabled={selectedItems.get(item.value) === undefined}
                                             />
                                         </div>
-                                        <div className="flex gap-2 items-center">
+                                        <div className="flex gap-3 items-center ">
                                             <label className=" text-sm" htmlFor={`quantity-${item.value}`}>Quantity: </label>
                                             <Input
                                                 id={`quantity-${item.value}`}
-                                                onChange={(e) => onSelect(item.value, Number(e.target.value), selectedItems.get(item.value)?.price || 1)}
+                                                onChange={(e) => onSelect(item.value, Number(e.target.value), selectedItems.get(item.value)?.price || 1, selectedItems.get(item.value)?.id)}
                                                 type="number"
                                                 min={1}
                                                 placeholder='Quantity'
                                                 name='quantity'
-                                                className='w-40 h-7'
+                                                className='w-24 h-7'
                                                 value={selectedItems.get(item.value)?.quantity || ""}
                                                 disabled={selectedItems.get(item.value) === undefined}
                                             />
+                                            <p className="  w-24 text-sm uppercase  "> {item.unit}</p>
                                         </div>
                                     </div>
                                 </div>

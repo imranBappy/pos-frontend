@@ -42,9 +42,7 @@ const paymentFormSchema = z.object({
     type: z.string()
 })
 
-
 type paymentFormValues = z.infer<typeof paymentFormSchema>
-
 interface PaymentProps {
     orderId?: string | undefined;
     disabled?: boolean,

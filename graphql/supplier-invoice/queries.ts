@@ -1,25 +1,34 @@
 import { gql } from "@apollo/client";
 
-export const SUPPLIER_INVOICE_MUTATION = gql`
-  mutation SupplierInvoiceMutation(
-    $id: ID
-    $due: Float # Use Float for DecimalField
-    $duePaymentDate: Date
-    $invoiceNumber: String!
-    $amount: Float!
-    $status: String!
-    $supplier: ID! # Send Supplier ID
-  ) {
-    supplierInvoiceMutation( # Your mutation name
-      id: $id
-      due: $due
-      duePaymentDate: $duePaymentDate
-      invoiceNumber: $invoiceNumber
-      amount: $amount
-      status: $status
-      supplier: $supplier
-    ) {
-      supplierInvoice { # The SupplierInvoice object returned by the mutation
+
+
+// supplier-invoice/queries.ts
+export const SUPPLIER_INVOICE_QUERY = gql`
+query SupplierInvoiceQuery($id: ID!) {
+  supplierInvoice(id: $id) {
+    id
+    due
+    duePaymentDate
+    invoiceNumber
+    invoiceImage
+    amount
+    status
+    supplier {
+      id
+      name
+    }
+    createdAt
+    updatedAt
+    paidAmount
+  }
+}
+`;
+
+export const SUPPLIER_INVOICES_QUERY = gql`
+ query SupplierInvoicesQuery($offset: Int, $first: Int, $search: String) {
+  supplierInvoices(offset: $offset, first: $first, search: $search) {
+    edges {
+      node {
         id
         due
         duePaymentDate
@@ -28,73 +37,62 @@ export const SUPPLIER_INVOICE_MUTATION = gql`
         status
         supplier {
           id
-          name # or other supplier fields
+          name
         }
         createdAt
         updatedAt
+        paidAmount
       }
-      success
-      message
     }
+    
+    totalCount
   }
+}
 `;
-
-// supplier-invoice/queries.ts
-export const SUPPLIER_INVOICE_QUERY = gql`
-  query SupplierInvoiceQuery($id: ID!) {
-    supplierInvoice(id: $id) {
-      id
-      due
-      duePaymentDate
-      invoiceNumber
-      amount
-      status
-      supplier {
+export const SUPPLIER_INVOICE_ITEMS_QUERY = gql`
+query MyQuery($supplierInvoice: String) {
+  parchageInvoiceItems(supplierInvoice: $supplierInvoice) {
+    totalCount
+    edges {
+      node {
+        createdAt
         id
-        name
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-
-export const SUPPLIER_INVOICES_QUERY = gql`
-  query SupplierInvoicesQuery(
-    $offset: Int
-    $first: Int
-    $search: String
-    # Add other filter variables as needed
-  ) {
-    supplierInvoices(
-      offset: $offset
-      first: $first
-      search: $search
-      # ... other filter arguments
-    ) {
-      edges {
-        node {
+        price
+        quantity
+        updatedAt
+        item {
           id
-          due
-          duePaymentDate
-          invoiceNumber
+          name
+          stock
+        }
+        supplierInvoice {
+          id
           amount
-          status
-          supplier {
-            id
-            name
-          }
-          createdAt
-          updatedAt
         }
       }
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
-      totalCount
+    }
+   
+  }
+}
+`
+
+export const SUPPLIER_INVOICE_ITEM_QUERY = gql`
+query MyQuery($id: ID!) {
+  parchageInvoiceItem(id: $id) {
+    createdAt
+    id
+    price
+    quantity
+    updatedAt
+    item {
+          id
+          name
+          stock
+    }
+    supplierInvoice {
+          id
+          amount
     }
   }
-`;
+}
+`

@@ -1,6 +1,25 @@
 import { gql } from "@apollo/client";
 
 
+export const SUPPLIER_PAYMENT_QUERY = gql`
+query MyQuery($id: ID!) {
+  supplierPayment(id: $id) {
+    amount
+    createdAt
+    id
+    invoice {
+      id
+      due
+      amount
+      invoiceNumber
+      status
+    }
+    paymentMethod
+    status
+    trxId
+  }
+}
+`;
 
 export const SUPPLIER_PAYMENTS_QUERY = gql`
 query MyQuery($search: String, $status: InventorySupplierPaymentStatusChoices, $paymentMethod: InventorySupplierPaymentPaymentMethodChoices) {
@@ -12,11 +31,9 @@ query MyQuery($search: String, $status: InventorySupplierPaymentStatusChoices, $
     totalCount
     edges {
       node {
-        amountPaid
         createdAt
         id
         paymentMethod
-        referenceNumber
         status
         trxId
         updatedAt
@@ -27,7 +44,13 @@ query MyQuery($search: String, $status: InventorySupplierPaymentStatusChoices, $
             id
             name
           }
+          amount
+          due
+          paidAmount
+          status
+          duePaymentDate
         }
+        amount
       }
     }
   }

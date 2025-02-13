@@ -35,7 +35,7 @@ const useStore = create<AppState>()(
                     token: state.token,
                     isAuthenticated: state.isAuthenticated,
                     role: state.role,
-                    outlet: state.outlets,
+                    outlets: state.outlets,
                     table: state.table,
                 }),
             }

@@ -70,7 +70,7 @@ export function ActionsDropdown({ item }: ActionsDropdownProps) {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                    <Link href={`/suppliers/${item.id}`}>Edit Supplier</Link>
+                    <Link href={`/supplier-invoices/${item.id}`}>Edit Supplier</Link>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

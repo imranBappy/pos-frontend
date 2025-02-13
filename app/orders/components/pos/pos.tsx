@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import * as z from "zod"
-import { ORDER_PRODUCT_MUTATION, ORDER_MUTATION, PRODUCT_TYPE, ORDERS_QUERY, ORDER_QUERY, DELETE_ORDER_PRODUCT, FLOOR_TABLES_TYPE, } from '@/graphql/product';
+import { ORDER_PRODUCT_MUTATION, ORDER_MUTATION, PRODUCT_TYPE, ORDERS_QUERY, ORDER_QUERY, DELETE_ORDER_PRODUCT, FLOOR_TABLES_TYPE, CHECK_INGREDIENT_AVAILABLE, } from '@/graphql/product';
 import { USER_QUERY } from '@/graphql/accounts/queries';
 import { cn, findVat, toFixed } from '@/lib/utils';
 import { Card } from "@/components/ui/card";
@@ -71,6 +71,8 @@ const Pos = () => {
     const tableState = useStore((store) => store.table)
     const clearTable = useStore((store) => store.clearTable)
     const outlets = useStore((store) => store.outlets)
+    console.log({outlets});
+    
     const activeOutlet = outlets[0];
 
     const cart = useStore((store) => store.cart)
@@ -103,7 +105,7 @@ const Pos = () => {
     const [deleteOrderProduct] = useMutation(DELETE_ORDER_PRODUCT)
     const [createOrderProduct, { loading: createOrderProductLoading }] = useMutation(ORDER_PRODUCT_MUTATION)
     const emailSchema = z.string().email({ message: "Invalid email format" });
-
+    const [checkIngredientAvailable, { loading: checking }] = useMutation(CHECK_INGREDIENT_AVAILABLE)
 
     const { data: userData } = useQuery(USER_QUERY, {
         variables: {
@@ -192,6 +194,24 @@ const Pos = () => {
                 return;
             }
 
+            // check ingredient
+            const res = await checkIngredientAvailable({
+                variables: {
+                    orderProducts: cart.map(item => ({
+                        product: item.id,
+                        quantity: item.quantity,
+                    }))
+                }
+            })
+            if (!res?.data?.checkIngredientAvailable?.success) {
+                toast({
+                    title: "Stock Error",
+                    description: res?.data?.checkIngredientAvailable?.message,
+                    variant: 'destructive'
+                })
+                return
+            }
+
             const order = await createOrder({
                 variables: {
                     id: id ? id : undefined,
@@ -227,7 +247,7 @@ const Pos = () => {
                 },
             })))
 
-            // delete product
+            // delete order item
             if (id) {
                 const orderItemsDelete: string[] = []
                 orderRes.order?.items?.edges.forEach(({ node }: { node: CARD_TYPE }) => {
@@ -265,6 +285,8 @@ const Pos = () => {
             clearTable()
 
         } catch (error) {
+            console.log(error);
+            
             toast({
                 title: "Error",
                 description: (error as Error).message,
@@ -419,11 +441,11 @@ const Pos = () => {
                                     openBtnName="Order"
                                     orderId={orderId}
                                     disabled={
-                                        (createOrderLoading || createOrderProductLoading)
+                                        (createOrderLoading || checking || createOrderProductLoading)
                                     }
                                     onPaymentRequest={handlePlaceOrder}
                                 />
-                                <Button disabled={cart?.length === 0} isLoading={createOrderLoading || createOrderProductLoading} onClick={() => { handlePlaceOrder() }} className="w-full ">
+                                <Button disabled={cart?.length === 0} isLoading={createOrderLoading || createOrderProductLoading || checking} onClick={() => { handlePlaceOrder() }} className="w-full ">
                                     Add To Cart
                                 </Button>
                             </div>

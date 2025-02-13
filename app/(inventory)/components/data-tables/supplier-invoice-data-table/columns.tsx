@@ -5,6 +5,7 @@ import { ArrowUpDown } from "lucide-react";
 import moment from "moment";
 import { ActionsDropdown } from "./actions-dropdown"; // If you have an actions dropdown
 import Link from "next/link";
+import { toFixed } from "@/lib/utils";
 
 export const supplierInvoiceColumns: ColumnDef<SUPPLIER_INVOICE_TYPE>[] = [
     {
@@ -24,14 +25,15 @@ export const supplierInvoiceColumns: ColumnDef<SUPPLIER_INVOICE_TYPE>[] = [
             if (supplier) {
                 return (
                     <Button variant={'link'}>
-                        <Link href={`/suppliers/${supplier.id}`} className="capitalize">{supplier.name}</Link>
+                        <Link href={`/supplier-invoices/${supplier.id}`} className="capitalize">{supplier.name}</Link>
                     </Button>
                 );
             } else {
-                return "N/A";
+                return <p className="ml-4">N/A</p>;
             }
         },
     },
+
     {
         accessorKey: "amount",
         header: ({ column }) => (
@@ -43,7 +45,20 @@ export const supplierInvoiceColumns: ColumnDef<SUPPLIER_INVOICE_TYPE>[] = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => row.getValue("amount"), // Format as needed (e.g., currency)
+        cell: ({ row }) => toFixed(row.getValue("amount")), // Format as needed (e.g., currency)
+    },
+    {
+        accessorKey: "paidAmount",
+        header: ({ column }) => (
+            <Button
+                variant="ghost"
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+                Paid Amount
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
+        cell: ({ row }) => toFixed(row.getValue("paidAmount")), // Format as needed (e.g., currency)
     },
     {
         accessorKey: "due",
@@ -56,7 +71,7 @@ export const supplierInvoiceColumns: ColumnDef<SUPPLIER_INVOICE_TYPE>[] = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => row.getValue("due"), // Format as needed
+        cell: ({ row }) => toFixed(row.getValue("due")), // Format as needed
     },
     {
         accessorKey: "duePaymentDate",

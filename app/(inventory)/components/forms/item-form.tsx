@@ -29,18 +29,12 @@ const formSchema = z.object({
         message: "Name must be at least 2 characters.",
     }),
     category: z.string().optional(),
-    unit: z.string().optional(),
+    unit: z.string(),
     alertStock: z.string().min(1, {
         message: "Alert quantity is required.",
     }),
     sku: z.string().min(1, {
         message: "SKU is required.",
-    }),
-    price: z.string().min(1, {
-        message: "Price is required.",
-    }),
-    stock: z.string().min(0, {
-        message: "Current stock must be a positive number.",
     }),
 })
 
@@ -91,8 +85,6 @@ export function ItemForm({ itemId }: { itemId?: string }) {
             form.setValue("unit", data.item.unit?.id)
             form.setValue("alertStock", String(data.item.alertStock))
             form.setValue("sku", data.item.sku)
-            form.setValue("price", String(data.item.price))
-            form.setValue("stock", String(data.item.stock))
         },
         skip: !itemId,
     })
@@ -143,8 +135,7 @@ export function ItemForm({ itemId }: { itemId?: string }) {
                 unit: data.unit,
                 alertStock: Number(data.alertStock),
                 sku: data.sku,
-                price: Number(data.price),
-                stock: Number(data.stock),
+
             },
         })
     }
@@ -180,28 +171,6 @@ export function ItemForm({ itemId }: { itemId?: string }) {
                                         label="SKU"
                                         placeholder="Enter SKU"
                                     />
-                                </div>
-
-                            </div>
-
-                            <div className="space-y-4">
-                                <h3 className="text-lg font-semibold">Pricing & Time</h3>
-                                <Separator />
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <TextField
-                                        form={form}
-                                        name="price"
-                                        label="Price"
-                                        placeholder="Enter price"
-                                        type="number"
-                                    />
-                                    <TextField
-                                        form={form}
-                                        name="stock"
-                                        label="Stock"
-                                        placeholder="Enter Stock"
-                                        type="number"
-                                    />
                                     <TextField
                                         form={form}
                                         name="alertStock"
@@ -209,10 +178,11 @@ export function ItemForm({ itemId }: { itemId?: string }) {
                                         placeholder="Enter alert stock"
                                         type="number"
                                     />
-
-
                                 </div>
+
                             </div>
+
+
 
                             <div className="space-y-4">
                                 <h3 className="text-lg font-semibold">Category & Unit</h3>

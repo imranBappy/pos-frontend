@@ -158,3 +158,13 @@ mutation MyMutation($id: ID !, $orderType: String!) {
   }
 }
 `
+
+export const CHECK_INGREDIENT_AVAILABLE = gql`
+mutation MyMutation($orderProducts: [OrderProductInput!]!) {
+  checkIngredientAvailable(orderProducts: $orderProducts) {
+    success
+    message
+  }
+}
+
+`

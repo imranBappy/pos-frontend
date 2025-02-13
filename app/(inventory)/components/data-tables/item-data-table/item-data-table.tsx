@@ -14,7 +14,7 @@ import { ITEM_TYPE } from "@/graphql/item/types"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ITEMS_QUERY } from "@/graphql/item/queries"
-import { toFixed } from "@/lib/utils"
+ 
 
 export const ItemDataTable = () => {
     const [pagination, setPagination] = useState({
@@ -62,7 +62,7 @@ export const ItemDataTable = () => {
     const items: ITEM_TYPE[] = res?.items?.edges?.map(({ node }: { node: ITEM_TYPE }) => ({
         id: node.id,
         name: node.name,
-        price: toFixed(node.price),
+        currentStock: node.currentStock,
         sku: node.sku,
         category: node.category,
         unit: node.unit,

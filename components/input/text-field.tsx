@@ -12,6 +12,7 @@ export const TextField = <T extends Record<string, string | number | boolean | F
     itemClassName = '',
     type = 'text',
     min,
+    disabled = false,
     onChange,
     ...rest
 }: {
@@ -23,12 +24,14 @@ export const TextField = <T extends Record<string, string | number | boolean | F
     itemClassName?: string,
     type?: string
     min?: number,
+    disabled?: boolean,
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
     rest?: React.InputHTMLAttributes<HTMLInputElement>
 }) => {
     const hasError = form.formState.errors[name]; // Dynamically access the error for the current field
     return (
         <FormField
+            disabled={disabled}
             control={form.control}
             name={name}
             render={({ field }) => (
