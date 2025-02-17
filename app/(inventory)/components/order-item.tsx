@@ -5,23 +5,21 @@ import { ORDER_PRODUCT_MUTATION, ORDER_MUTATION, PRODUCT_TYPE, ORDERS_QUERY, ORD
 import { cn, findVat, toFixed } from '@/lib/utils';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import CardItem from './card-item';
 import { toast } from '@/hooks/use-toast';
 import { FilterState } from '@/app/product/components';
 import Button from '@/components/button';
 import { SidebarContext } from '@/components/ui/sidebar';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
-import { X, LampFloor, Plus, Search } from 'lucide-react';
-import PaymentModal from '../order-payment/payment-modal';
+import { X, Plus, Search } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
-import DiscountModel from './DiscountModel';
-import POSCategories from './POS-categories';
-import POSProducts from './POS-products';
 import Link from 'next/link';
 import useStore from '@/stores';
 import { CARD_TYPE } from '@/stores/slices/cartSlice';
 import CustomerSearch from '@/components/CustomerSearch';
 import { USER_TYPE } from '@/graphql/accounts';
+import CardItem from '@/app/orders/components/pos/card-item';
+import OrderItemCategories from './Item-categories';
+import Items from './items';
 
 
 export const calculateDiscount = (price: number, vat: number, discount: number) => {
@@ -51,14 +49,13 @@ const calculatePrice = (cart: CARD_TYPE[]) => {
     return result
 }
 
-const Pos = () => {
+const OrderItem = () => {
     const [filters, setFilters] = useState<FilterState>({
         search: '',
         category: null,
         subcategory: null,
         kitchen: null,
         tag: '',
-        price: 0,
         priceLte: null,
         orderByPrice: '',
         isActive: 'ALL',
@@ -66,13 +63,12 @@ const Pos = () => {
     })
     const searchParams = useSearchParams()
     const id = searchParams.get('id')
-    const [orderId, setOrderId] = useState<string | undefined>()
+    const [, setOrderId] = useState<string | undefined>()
     const debouncedSearch = useDebouncedValue(filters.search, 500);
     const tableState = useStore((store) => store.table)
     const clearTable = useStore((store) => store.clearTable)
     const outlets = useStore((store) => store.outlets)
     const activeOutlet = outlets[0];
-
 
     const cart = useStore((store) => store.cart)
     const addCart = useStore((store) => store.addCart)
@@ -115,8 +111,6 @@ const Pos = () => {
                 itemId: node.id,
                 totalDiscount: node.discount ? parseFloat(`${toFixed(node.discount)}`) + findVat(parseFloat(`${node.discount}`), node?.product?.vat || 1) : 0,
             }))
-            console.log({ items });
-
             addCarts(items)
         }
     })
@@ -247,19 +241,8 @@ const Pos = () => {
                 })))
             }
 
-
-            // toast({
-            //     title: "Order Created",
-            //     description: "Order has been created successfully",
-            // })
-
             clearCart()
             setSelectedUser(undefined)
-
-            // setFloorTable({
-            //     floor: "",
-            //     table: ""
-            // })
             clearTable()
 
         } catch (error) {
@@ -291,16 +274,16 @@ const Pos = () => {
                         <Input
                             value={filters.search}
                             onChange={(e) => setFilters((preState) => ({ ...preState, search: e.target.value }))}
-                            placeholder="Search products..."
+                            placeholder="Search item..."
                             className="pl-8"
                         />
                     </div>
                     {/* Categories Section */}
-                    <POSCategories
+                    <OrderItemCategories
                         filters={filters}
                         handleFilterChange={handleFilterChange}
                     />
-                    <POSProducts
+                    <Items
                         filters={filters}
                         handleAddToCart={handleAddToCart}
                         cart={cart}
@@ -324,7 +307,7 @@ const Pos = () => {
                         <div className="p-3 bg-muted rounded-lg">
                             <div className="flex justify-between items-start">
                                 <div>
-                                    <p className="font-medium">{`${selectedUser?.name || 'Walk-in Customer'}`} </p>
+                                    <p className="font-medium">{`${selectedUser?.name || 'Unknown Supplier'}`} </p>
                                     <p className="text-sm text-muted-foreground">{selectedUser?.email || 'No email address'}</p>
                                 </div>
                                 {
@@ -341,26 +324,7 @@ const Pos = () => {
                         </div>
                     </div>
                 </div>
-                <div className="p-4 border-b ">
-                    {/* Table */}
-                    <div className='flex gap-2'>
-                        <div className="flex justify-between w-full ">
-                            <h5 className='flex items-center gap-2  '> <span>Table :</span> <span className='flex items-center'><LampFloor className=" h-4 w-4 text-muted-foreground" /> {
-                                tableState?.length
-                            }</span></h5>
-                            <div className=' flex gap-1'>
-                                <Button onClick={clearTable} className='rounded-sm' size='sm' variant='destructive'>
-                                    <X />
-                                </Button>
-                                <Link href={`/floor/tables-view`}>
-                                    <Button className=' rounded-sm' size='sm' variant='secondary' >
-                                        <Plus />
-                                    </Button>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
 
                 {/* Cart Items Section */}
                 <div className="flex-1 p-4 overflow-y-auto">
@@ -395,17 +359,7 @@ const Pos = () => {
                             <span>$ {finalAmount || '0'}</span>
                         </div>
                         <div className=' mt-4  flex flex-col gap-2  '>
-                            <DiscountModel />
                             <div className='flex gap-2'>
-                                <PaymentModal
-                                    variant="outline"
-                                    openBtnName="Order"
-                                    orderId={orderId}
-                                    disabled={
-                                        (createOrderLoading || checking || createOrderProductLoading)
-                                    }
-                                    onPaymentRequest={handlePlaceOrder}
-                                />
                                 <Button disabled={cart?.length === 0} isLoading={createOrderLoading || createOrderProductLoading || checking} onClick={() => { handlePlaceOrder() }} className="w-full ">
                                     Add To Cart
                                 </Button>
@@ -418,4 +372,4 @@ const Pos = () => {
     );
 };
 
-export default Pos;
+export default OrderItem;

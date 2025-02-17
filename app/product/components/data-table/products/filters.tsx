@@ -28,7 +28,7 @@ export interface FilterState {
   subcategory: number | null | string;
   kitchen: number | null;
   tag: string;
-  price: number;
+  price?: number;
   priceLte: number | null;
   orderByPrice: string | null;
   dateRange?: DateRange;
@@ -116,13 +116,13 @@ export function TableFilters({ filters, onFilterChange }: FiltersProps) {
     value: node.node.id,
     label: node.node.name,
   }))
-  
+
   useEffect(() => {
     const timer = setTimeout(() => {
       onFilterChange("search")(debouncedSearch)
     }, 500)
     return () => clearTimeout(timer)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch])
 
 

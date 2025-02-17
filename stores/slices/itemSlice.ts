@@ -1,4 +1,7 @@
 import { StateCreator, } from "zustand";
+/*
+    kay:id of item,
+*/
 export type ITEMS_TYPE = Map<string, { quantity: number, price: number, id?: string }>
 export interface ItemState {
     items: ITEMS_TYPE;

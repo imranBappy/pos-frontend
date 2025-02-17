@@ -73,7 +73,7 @@ const DiscountModel = () => {
                             <TableRow key={node.id}>
                                 <TableCell className="py-4">{node?.name}</TableCell>
                                 <TableCell className="py-4">{node?.quantity}</TableCell>
-                                <TableCell className="py-4">${node?.price.toFixed(2)}</TableCell>
+                                <TableCell className="py-4">${node?.price?.toFixed(2)}</TableCell>
                                 <TableCell className="py-4 font-medium">
                                     <Input
                                         onChange={(e) => handleDiscount(node.id, parseFloat(e.target.value) || 0)}

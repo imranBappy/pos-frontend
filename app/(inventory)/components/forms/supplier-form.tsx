@@ -17,21 +17,29 @@ import { Button } from "@/components/button"
 import { useRouter } from "next/navigation"
 import { SUPPLIER_MUTATION } from "@/graphql/supplier/mutations"
 import { SUPPLIER_QUERY, SUPPLIERS_QUERY } from "@/graphql/supplier/queries"
+import { isValidPhoneNumber } from "@/lib/utils"
+
 
 // Define the form schema using Zod
 const formSchema = z.object({
     name: z.string().min(2, {
         message: "Name must be at least 2 characters.",
     }),
-    phone_number: z.string().min(10, {
-        message: "Phone number must be at least 10 characters.",
+    branch: z.string().min(2, {
+        message: "Branch must be at least 2 characters.",
+    }).optional(),
+    contact_person: z.string().min(2, {
+        message: "Contact person must be at least 2 characters.",
     }),
-    whatsapp_number: z.string().min(10, {
-        message: "WhatsApp number must be at least 10 characters.",
+    phone_number: z.string().refine(isValidPhoneNumber, {
+        message: "Invalid the valid phone number",
+    }),
+    whatsapp_number: z.string().refine(isValidPhoneNumber, {
+        message: "Invalid the valid whatspp number",
     }).optional(),
     email_address: z.string().email({
         message: "Invalid email address.",
-    }).optional(),
+    }),
     address: z.string().optional(),
 })
 
@@ -52,6 +60,8 @@ function SupplierForm({ supplierId }: { supplierId?: string }) {
             router.push('/suppliers')
         },
         onError: (err) => {
+            console.log(err.message);
+
             toast({
                 variant: 'destructive',
                 description: err.message,
@@ -84,11 +94,28 @@ function SupplierForm({ supplierId }: { supplierId?: string }) {
             if (data.supplier.address) {
                 form.setValue("address", data.supplier.address)
             }
+            if (data.supplier.branch) {
+                form.setValue("branch", data.supplier.branch)
+            }
+            if (data.supplier.contactPerson) {
+                form.setValue("contact_person", data.supplier.contactPerson)
+            }
         },
         skip: !supplierId,
     })
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
+        console.log({
+            id: supplierId,
+            name: data.name,
+            phoneNumber: data.phone_number,
+            whatsappNumber: data.whatsapp_number,
+            emailAddress: data.email_address,
+            address: data.address,
+            branch: data.branch,
+            contactPerson: data.contact_person,
+        });
+
         await supplierMutation({
             variables: {
                 id: supplierId,
@@ -97,6 +124,8 @@ function SupplierForm({ supplierId }: { supplierId?: string }) {
                 whatsappNumber: data.whatsapp_number,
                 emailAddress: data.email_address,
                 address: data.address,
+                branch: data.branch,
+                contactPerson: data.contact_person,
             },
         })
     }
@@ -118,6 +147,18 @@ function SupplierForm({ supplierId }: { supplierId?: string }) {
                                 name="name"
                                 label="Name"
                                 placeholder="Supplier Name"
+                            />
+                            <TextField
+                                form={form}
+                                name="branch"
+                                label="Branch"
+                                placeholder="Branch"
+                            />
+                            <TextField
+                                form={form}
+                                name="contact_person"
+                                label="Contact person"
+                                placeholder="Contact person"
                             />
                             <TextField
                                 form={form}

@@ -88,6 +88,7 @@ export const ProductsDataTable = () => {
         kitchen: node.kitchen,
         category: node.category,
         subcategory: node.subcategory,
+        ingredients:node.ingredients
     })) || [];
 
     const table = useReactTable({

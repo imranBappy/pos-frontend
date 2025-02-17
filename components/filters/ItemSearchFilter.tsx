@@ -46,11 +46,11 @@ interface FilterProps {
     selectedItems: ITEMS_TYPE;
     onSelect: (id: string, quantity: number, price: number, item?: string,) => void;
     onRemove: (id: string) => void;
+    isForProduct?: boolean
 }
 
-const SearchFilter = ({ placeholder = "Search...", onSelect, onRemove, selectedItems, items }: FilterProps) => {
+const SearchFilter = ({ placeholder = "Search...", isForProduct, onSelect, onRemove, selectedItems, items }: FilterProps) => {
     const [search, setSearch] = useState("")
-    
     const filteredItems = useMemo(
         () => items.filter((item) => item.label.toLowerCase().includes(search.toLowerCase())),
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -96,6 +96,42 @@ const SearchFilter = ({ placeholder = "Search...", onSelect, onRemove, selectedI
                                         {
                                             selectedItems.get(item.value) ? <button onClick={() => onRemove(item.value)} type="button"><X className="bg-red-500 rounded" size={18} /></button> : null
                                         }
+
+                                    </div>
+
+                                    <div className=" flex gap-7 ">
+                                        {
+                                            !isForProduct ? <div className=" flex gap-2 items-center  ">
+                                                <label className=" text-sm" htmlFor={`price-${item.value}`}>Price: </label>
+                                                <Input
+                                                    id={`price-${item.value}`}
+                                                    onChange={(e) => onSelect(item.value, selectedItems.get(item.value)?.quantity || 1, Number(e.target.value), selectedItems.get(item.value)?.id)}
+                                                    type="number"
+                                                    min={0}
+                                                    placeholder='Price'
+                                                    name='price'
+                                                    className='w-24 h-7'
+                                                    value={selectedItems.get(item.value)?.price || ""}
+                                                    disabled={selectedItems.get(item.value) === undefined}
+                                                />
+                                            </div> : null
+                                        }
+
+                                        <div className="flex gap-3 items-center ">
+                                            <label className=" text-sm" htmlFor={`quantity-${item.value}`}>Quantity: </label>
+                                            <Input
+                                                id={`quantity-${item.value}`}
+                                                onChange={(e) => onSelect(item.value, Number(e.target.value), selectedItems.get(item.value)?.price || 1, selectedItems.get(item.value)?.id)}
+                                                type="number"
+                                                min={1}
+                                                placeholder='Quantity'
+                                                name='quantity'
+                                                className='w-24 h-7'
+                                                value={selectedItems.get(item.value)?.quantity || ""}
+                                                disabled={selectedItems.get(item.value) === undefined}
+                                            />
+                                            <p className="  w-24 text-sm uppercase  "> {item.unit}</p>
+                                        </div>
                                     </div>
                                 </div>
                                 <Separator className="my-2" />

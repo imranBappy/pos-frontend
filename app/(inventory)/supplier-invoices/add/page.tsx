@@ -1,10 +1,10 @@
 import React from 'react';
-import SupplierInvoiceForm from '../../components/forms/supplier-invoice-form';
+import OrderItem from '../../components/order-item';
 
 const page = () => {
     return (
-        <div>
-           <SupplierInvoiceForm />
+        <div className='p-3'>
+            <OrderItem />
         </div>
     );
 };

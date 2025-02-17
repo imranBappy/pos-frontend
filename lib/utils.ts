@@ -94,3 +94,33 @@ export const toFixed = (value: number | string) => {
 export const underscoreToSpace = (value: string) => {
   return value.replace(/_/g, ' ')
 }
+
+export function isValidPhoneNumber(phoneNumber: string) {
+  // Regex to check valid phone number.
+  const pattern = /^[+]{1}(?:[0-9\-\\(\\)\\/.]\s?){6,15}[0-9]{1}$/;
+
+  // If the phone number is empty return false
+  if (!phoneNumber) {
+    return "false";
+  }
+
+  // Return true if the phone number
+  // matched the Regex
+  if (pattern.test(phoneNumber)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export function debounce(func: (...args: unknown[]) => void, wait: number) {
+    let timeout: NodeJS.Timeout
+    return function executedFunction(...args: unknown[]) {
+        const later = () => {
+            clearTimeout(timeout)
+            func(...args)
+        }
+        clearTimeout(timeout)
+        timeout = setTimeout(later, wait)
+    }
+}

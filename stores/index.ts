@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
-import { persist } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 import {
     AuthState,
     createAuthSlice,
@@ -30,7 +29,6 @@ const useStore = create<AppState>()(
                 name: "bound-store", // Name of the localStorage key
                 partialize: (state) => ({
                     // Store only what's necessary
-                    // items: state.items,
                     cart: state.cart,
                     token: state.token,
                     isAuthenticated: state.isAuthenticated,

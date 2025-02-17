@@ -166,5 +166,22 @@ mutation MyMutation($orderProducts: [OrderProductInput!]!) {
     message
   }
 }
-
+`
+export const INGREDIENT_MUTATION = gql`
+mutation MyMutation($id: String, $item: ID! , $product: ID!, $quantity: Int!) {
+  ingredientCud(
+    input: {product: $product, quantity: $quantity, id: $id, item: $item}
+  ) {
+    message
+    success
+  }
+}
+`
+export const DELETE_INGREDIENT = gql`
+mutation MyMutation($id: ID!) {
+  deleteIngredient(id: $id) {
+    message
+    success
+  }
+}
 `

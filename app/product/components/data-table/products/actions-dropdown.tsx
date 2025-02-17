@@ -60,7 +60,9 @@ export function ActionsDropdown({ item }: ActionsDropdownProps) {
                     Delete
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>View details</DropdownMenuItem>
+                <DropdownMenuItem>
+                    <Link className="w-full" href={`/product/${item.id}/ingredient`}>Ingredient</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem>
                     <Link className="w-full" href={`/product/${item.id}`}>Edit</Link>
                 </DropdownMenuItem>

@@ -28,7 +28,9 @@ export const SUPPLIER_QUERY = gql`
           phoneNumber
           whatsappNumber
           emailAddress
-          address
+          address,
+          contactPerson,
+          branch
     }
   }
 `;

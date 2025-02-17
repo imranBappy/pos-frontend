@@ -47,6 +47,9 @@ query PRODUCTS_QUERY($offset: Int, $search: String, $after: String, $before: Str
           id
           name
         }
+        ingredients{
+          totalCount
+        }
       }
     }
   }
@@ -552,6 +555,29 @@ query MyQuery($id: ID , $address: ID) {
     name
     photo
     updatedAt
+  }
+}
+`
+export const INGREDIENTS_QUERY = gql`
+query MyQuery($product: String) {
+  ingredients(product: $product) {
+    totalCount
+    edges {
+      node {
+        id
+        price
+        quantity
+        product {
+          id
+          name
+        }
+        item {
+          id
+          name
+          alertStock
+        }
+      }
+    }
   }
 }
 `

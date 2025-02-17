@@ -23,6 +23,13 @@ export const columns: ColumnDef<PRODUCT_TYPE>[] = [
             <div className="capitalize">{row.getValue("price")}</div>
         ),
     },
+    {
+        accessorKey: "ingredients",
+        header: "Ingredients",
+        cell: ({ row }) => (
+            <div className="capitalize">{(row.getValue("ingredients") as { totalCount: number })?.totalCount}</div>
+        ),
+    },
 
     {
         accessorKey: "isActive",

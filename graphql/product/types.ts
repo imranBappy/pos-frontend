@@ -1,4 +1,5 @@
 import { ADDRESS_TYPE, USER_TYPE } from "../accounts/types";
+import { ITEM_TYPE } from "../item/types";
 import { OUTLET_TYPE } from "../outlet/types";
 
 interface RELATED_TYPE {
@@ -22,6 +23,9 @@ export interface PRODUCT_TYPE {
     category?: RELATED_TYPE | string;
     subcategory?: RELATED_TYPE | string;
     images?: string | Promise<string>,
+    ingredients?: {
+        totalCount: number
+    }
 }
 export interface CATEGORY_TYPE {
     id: string;
@@ -107,4 +111,11 @@ export interface PAYMENT_TYPE {
     remarks: string;
     trxId: string;
     order: ORDER_TYPE[];
+}
+
+export interface INGREDIENT_QUERY {
+    id?: string
+    quantity: number
+    item: ITEM_TYPE
+    product: PRODUCT_TYPE
 }
