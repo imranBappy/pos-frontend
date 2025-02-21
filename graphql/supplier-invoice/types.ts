@@ -7,12 +7,15 @@ export interface SUPPLIER_INVOICE_TYPE {
     due: number; // DecimalField becomes number
     duePaymentDate: string | null; // DateField becomes string (ISO 8601) or null
     invoiceNumber: string;
+    invoiceImage?: string;
     amount: number;
     status: string;
+    paidAmount: number;
+    finalAmount: number;
+    poNumber?: string;
     supplier?: SUPPLIER_TYPE; // ForeignKey becomes SupplierType object
     createdAt: string; // DateTimeField becomes string (ISO 8601)
     updatedAt: string;
-    paidAmount:number
 }
 export interface SUPPLIER_INVOICE_ITEM_TYPE {
     id: string;

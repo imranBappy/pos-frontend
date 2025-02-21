@@ -17,12 +17,12 @@ import { ITEM_CATEGORES_QUERY } from "@/graphql/item-category/queries"
 import { ITEM_CATEGORY_TYPE } from "@/graphql/item-category/types"
 
 export interface FilterState {
-  search: string;
-  category: number | null | string;
-  stock: number;
-  price: number | null;
-  alertStock: number | null;
-  orderBy?: string
+    search: string;
+    category: number | null | string;
+    stock: number;
+    price: number | null;
+    safetyStock: number | null;
+    orderBy?: string;
 }
 
 interface FiltersProps {
@@ -60,8 +60,7 @@ export function TableFilters({ filters, onFilterChange }: FiltersProps) {
   const handleClearFilters = () => {
     onFilterChange('search')('')
     onFilterChange('category')(null)
-    onFilterChange('price')(0)
-    onFilterChange('alertStock')(0)
+    onFilterChange('safetyStock')(0);
     onFilterChange('stock')(0)
     onFilterChange('orderBy')('')
     setDebouncedSearch('')
@@ -85,65 +84,59 @@ export function TableFilters({ filters, onFilterChange }: FiltersProps) {
 
 
   return (
-    <>
-      <div className="grid grid-cols-1 mt-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
-        <div className="space-y-2">
-          <Input
-            placeholder="Search by name"
-            value={debouncedSearch}
-            onChange={(e) => handleSearchChange(e.target.value)}
-          />
-        </div>
+      <>
+          <div className="grid grid-cols-1 mt-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
+              <div className="space-y-2">
+                  <Input
+                      placeholder="Search by name"
+                      value={debouncedSearch}
+                      onChange={(e) => handleSearchChange(e.target.value)}
+                  />
+              </div>
 
-        <div className="space-y-2">
-          <Input
-            placeholder="Minmum price"
-            value={filters.price || ''}
-            type="number"
-            min={0}
-            onChange={(e) => handleFilterChange('price')(e.target.value)}
-          />
-        </div>
-        <div className="space-y-2">
-          <Input
-            placeholder="Stock"
-            value={filters.stock || ''}
-            type="number"
-            min={0}
-            onChange={(e) => handleFilterChange('stock')(e.target.value)}
-          />
-        </div>
+              <div className="space-y-2">
+                  <Input
+                      placeholder="Stock"
+                      value={filters.stock || ''}
+                      type="number"
+                      min={0}
+                      onChange={(e) =>
+                          handleFilterChange('stock')(e.target.value)
+                      }
+                  />
+              </div>
 
+              <div className="space-y-2">
+                  <Combobox
+                      options={categories || []}
+                      value={category}
+                      label="Category"
+                      onChangeOptions={handleChangeCategoryOption}
+                      isLoading={categories_loading}
+                  />
+              </div>
 
+              <div className="space-y-2">
+                  <Select
+                      value={filters.orderBy}
+                      onValueChange={handleFilterChange('orderBy')}
+                  >
+                      <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                          <SelectItem value="stockLevel">
+                              Stock Level ( Hight to Low ) 
+                          </SelectItem>
+                          <SelectItem value="-stockLevel">
+                              -Stock Level ( Low to Hight )
+                          </SelectItem>
+                      </SelectContent>
+                  </Select>
+              </div>
 
-        <div className="space-y-2">
-          <Combobox
-            options={categories || []}
-            value={category}
-            label="Category"
-            onChangeOptions={handleChangeCategoryOption}
-            isLoading={categories_loading}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Select
-            value={filters.orderBy}
-            onValueChange={handleFilterChange('orderBy')}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="price"> Price (1-9)</SelectItem>
-              <SelectItem value="-price"> -Price (9-1) </SelectItem>
-              <SelectItem value="createdAt"> CreatedAt (1-9)</SelectItem>
-              <SelectItem value="-createdAt"> -CreatedAt (9-1) </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="
+              <div
+                  className="
                     flex-1
                     text-sm
                     text-muted-foreground
@@ -153,20 +146,19 @@ export function TableFilters({ filters, onFilterChange }: FiltersProps) {
                     justify-end
                     items-end
 
-                    ">
-          <Button
-            variant="outline"
-            onClick={handleClearFilters}
-            className="text-sm"
-
-          >
-            <X />
-            Reset
-          </Button>
-        </div>
-      </div>
-
-    </>
+                    "
+              >
+                  <Button
+                      variant="outline"
+                      onClick={handleClearFilters}
+                      className="text-sm"
+                  >
+                      <X />
+                      Reset
+                  </Button>
+              </div>
+          </div>
+      </>
   );
 }
 

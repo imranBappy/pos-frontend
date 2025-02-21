@@ -24,33 +24,35 @@ export const ItemDataTable = () => {
 
     const [filters, setFilters] = useState<FilterState>({
         search: '',
-        alertStock: 0,
+        safetyStock: 0,
         stock: 0,
         price: 0,
         category: null,
-    })
+    });
     const { toast } = useToast()
 
-    const { loading, data: res, fetchMore } = useQuery(ITEMS_QUERY, {
+    const {
+        loading,
+        data: res,
+        fetchMore,
+    } = useQuery(ITEMS_QUERY, {
         variables: {
             offset: pagination.pageIndex * pagination.pageSize,
             first: pagination.pageSize,
             ...filters,
             search: filters.search ? filters.search : null,
-            alertStock: filters.alertStock ? filters.alertStock : null,
+            safetyStock: filters.safetyStock ? filters.safetyStock : null,
             stock: filters.stock ? filters.stock : null,
             price: filters.price ? filters.price : null,
-
         },
         onError: (error) => {
             toast({
-                title: "Error",
+                title: 'Error',
                 description: error.message,
-                variant: "destructive",
-            })
-        }
-    }
-    );
+                variant: 'destructive',
+            });
+        },
+    });
 
     const handleFilterChange = (key: keyof FilterState) => (value: FilterState[typeof key]) => {
         setFilters(prev => ({
@@ -59,17 +61,18 @@ export const ItemDataTable = () => {
         }))
     }
 
-    const items: ITEM_TYPE[] = res?.items?.edges?.map(({ node }: { node: ITEM_TYPE }) => ({
-        id: node.id,
-        name: node.name,
-        currentStock: node.currentStock,
-        sku: node.sku,
-        category: node.category,
-        unit: node.unit,
-        stock: node.stock,
-        alertStock: node.alertStock,
-
-    })) || [];
+    const items: ITEM_TYPE[] =
+        res?.items?.edges?.map(({ node }: { node: ITEM_TYPE }) => ({
+            id: node.id,
+            name: node.name,
+            currentStock: node.currentStock,
+            sku: node.sku,
+            category: node.category,
+            unit: node.unit,
+            stock: node.stock,
+            safetyStock: node.safetyStock,
+            stockLevel: node.stockLevel,
+        })) || [];
 
     const table = useReactTable({
         data: items,

@@ -12,9 +12,9 @@ mutation MyMutation($description: String, $id: String , $image: String , $name: 
 }
 `
 export const ITEM_MUTATION = gql`
-  mutation MyMutation($id: String, $alertStock: Int!, $category: ID, $name: String!,  $sku: String!, $unit: ID!) {
+  mutation MyMutation($id: String, $safetyStock: Int!, $category: ID, $name: String!,  $sku: String!, $unit: ID!) {
   itemCud(
-    input: {id: $id, alertStock: $alertStock, category: $category, name: $name, sku: $sku, unit: $unit}
+    input: {id: $id, safetyStock: $safetyStock, category: $category, name: $name, sku: $sku, unit: $unit}
   ) {
     message
     success

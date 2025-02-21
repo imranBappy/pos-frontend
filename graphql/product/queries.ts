@@ -559,25 +559,25 @@ query MyQuery($id: ID , $address: ID) {
 }
 `
 export const INGREDIENTS_QUERY = gql`
-query MyQuery($product: String) {
-  ingredients(product: $product) {
-    totalCount
-    edges {
-      node {
-        id
-        price
-        quantity
-        product {
-          id
-          name
+    query MyQuery($product: String) {
+        ingredients(product: $product) {
+            totalCount
+            edges {
+                node {
+                    id
+                    price
+                    quantity
+                    product {
+                        id
+                        name
+                    }
+                    item {
+                        id
+                        name
+                        safetyStock
+                    }
+                }
+            }
         }
-        item {
-          id
-          name
-          alertStock
-        }
-      }
     }
-  }
-}
-`
+`;

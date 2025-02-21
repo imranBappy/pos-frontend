@@ -4,24 +4,26 @@ import { gql } from "@apollo/client";
 
 // supplier-invoice/queries.ts
 export const SUPPLIER_INVOICE_QUERY = gql`
-query SupplierInvoiceQuery($id: ID!) {
-  supplierInvoice(id: $id) {
-    id
-    due
-    duePaymentDate
-    invoiceNumber
-    invoiceImage
-    amount
-    status
-    supplier {
-      id
-      name
+    query SupplierInvoiceQuery($id: ID!) {
+        supplierInvoice(id: $id) {
+            id
+            due
+            duePaymentDate
+            invoiceNumber
+            invoiceImage
+            amount
+            status
+            paidAmount
+            finalAmount
+            poNumber
+            supplier {
+                id
+                name
+            }
+            createdAt
+            updatedAt
+        }
     }
-    createdAt
-    updatedAt
-    paidAmount
-  }
-}
 `;
 
 export const SUPPLIER_INVOICES_QUERY = gql`

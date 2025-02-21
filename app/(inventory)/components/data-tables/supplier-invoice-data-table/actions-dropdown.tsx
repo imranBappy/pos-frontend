@@ -65,14 +65,26 @@ export function ActionsDropdown({ item }: ActionsDropdownProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem disabled={loading} onClick={() => handleDeleteSupplier(item.id)}>
+                <DropdownMenuItem
+                    disabled={loading}
+                    onClick={() => handleDeleteSupplier(item.id)}
+                >
                     Delete Supplier
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
+                {/* <DropdownMenuItem>
+                    <Link href={`/supplier-invoices/${item.id}`}>
+                        Edit Supplier
+                    </Link>
+                </DropdownMenuItem> */}
                 <DropdownMenuItem>
-                    <Link href={`/supplier-invoices/${item.id}`}>Edit Supplier</Link>
+                    <Link
+                        href={`/supplier-invoices/invoices-upload?id=${item.id}`}
+                    >
+                        Upload Invoice Image
+                    </Link>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
-    )
+    );
 } 

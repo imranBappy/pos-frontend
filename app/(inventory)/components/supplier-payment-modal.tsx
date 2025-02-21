@@ -167,7 +167,7 @@ const SupplierPaymentModal = ({ modalState, openBtnClassName = 'w-full', id, var
     }
     const isLoading = paymentQueryLoading || paymentLoading || loading
     // if (loading) return <Loading />;
-
+    
     return (
         <Modal
             openBtnClassName={openBtnClassName}
@@ -180,7 +180,6 @@ const SupplierPaymentModal = ({ modalState, openBtnClassName = 'w-full', id, var
             open={(isModelOpen && !disabled)}
             onOpenChange={(value) => value ? null : setIsModalOpen(value)}
             // onOpenChange={() => { }}
-
             onOpen={onPaymentRequest}
         >
             <Form  {...paymentForm}>

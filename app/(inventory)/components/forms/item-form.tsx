@@ -26,17 +26,17 @@ import { UNITS_QUERY } from "@/graphql/unit/queries"
 // Define the form schema using Zod
 const formSchema = z.object({
     name: z.string().min(2, {
-        message: "Name must be at least 2 characters.",
+        message: 'Name must be at least 2 characters.',
     }),
     category: z.string().optional(),
     unit: z.string(),
-    alertStock: z.string().min(1, {
-        message: "Alert quantity is required.",
+    safetyStock: z.string().min(1, {
+        message: 'Alert quantity is required.',
     }),
     sku: z.string().min(1, {
-        message: "SKU is required.",
+        message: 'SKU is required.',
     }),
-})
+});
 
 export function ItemForm({ itemId }: { itemId?: string }) {
     const { toast } = useToast()
@@ -49,31 +49,33 @@ export function ItemForm({ itemId }: { itemId?: string }) {
         onCompleted: async () => {
             toast({
                 variant: 'default',
-                description: "Success!",
-            })
-            form.reset()
-            router.push('/items')
+                description: 'Success!',
+            });
+            form.reset();
+            router.push('/items');
         },
         onError: (err) => {
             toast({
                 variant: 'destructive',
                 description: err.message,
-            })
+            });
         },
         awaitRefetchQueries: true,
-        refetchQueries: [{
-            query: ITEMS_QUERY,
-            variables: {
-                offset: 0,
-                first: 10,
-                search: null,
-                alertStock: null,
-                stock: 0,
-                price: null,
-                category: null
-            }
-        }],
-    })
+        refetchQueries: [
+            {
+                query: ITEMS_QUERY,
+                variables: {
+                    offset: 0,
+                    first: 10,
+                    search: null,
+                    safetyStock: null,
+                    stock: 0,
+                    price: null,
+                    category: null,
+                },
+            },
+        ],
+    });
 
     useQuery(ITEM_QUERY, {
         variables: {
@@ -83,7 +85,7 @@ export function ItemForm({ itemId }: { itemId?: string }) {
             form.setValue("name", data.item.name)
             form.setValue("category", data.item.category?.id)
             form.setValue("unit", data.item.unit?.id)
-            form.setValue("alertStock", String(data.item.alertStock))
+            form.setValue("safetyStock", String(data.item.safetyStock))
             form.setValue("sku", data.item.sku)
         },
         skip: !itemId,
@@ -133,7 +135,7 @@ export function ItemForm({ itemId }: { itemId?: string }) {
                 name: data.name,
                 category: data.category,
                 unit: data.unit,
-                alertStock: Number(data.alertStock),
+                safetyStock: Number(data.safetyStock),
                 sku: data.sku,
 
             },
@@ -143,19 +145,27 @@ export function ItemForm({ itemId }: { itemId?: string }) {
     return (
         <div>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-4xl mx-auto">
+                <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="w-full max-w-4xl mx-auto"
+                >
                     <Card className="border-none shadow-none">
                         <CardHeader>
-                            <CardTitle className="text-2xl">{itemId ? "Update Item" : "Create New Item"}</CardTitle>
+                            <CardTitle className="text-2xl">
+                                {itemId ? 'Update Item' : 'Create New Item'}
+                            </CardTitle>
                             <CardDescription>
-                                {itemId ? "Update the item information below." : "Enter the item information below."}
+                                {itemId
+                                    ? 'Update the item information below.'
+                                    : 'Enter the item information below.'}
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="space-y-4">
                                 <div className="flex items-center gap-2">
-                                    <h3 className="text-lg font-semibold">Basic Information</h3>
-
+                                    <h3 className="text-lg font-semibold">
+                                        Basic Information
+                                    </h3>
                                 </div>
                                 <Separator />
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -173,19 +183,18 @@ export function ItemForm({ itemId }: { itemId?: string }) {
                                     />
                                     <TextField
                                         form={form}
-                                        name="alertStock"
+                                        name="safetyStock"
                                         label="Alert Stock"
                                         placeholder="Enter alert stock"
                                         type="number"
                                     />
                                 </div>
-
                             </div>
 
-
-
                             <div className="space-y-4">
-                                <h3 className="text-lg font-semibold">Category & Unit</h3>
+                                <h3 className="text-lg font-semibold">
+                                    Category & Unit
+                                </h3>
                                 <Separator />
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <SwitchItem
@@ -206,17 +215,15 @@ export function ItemForm({ itemId }: { itemId?: string }) {
                                     />
                                 </div>
                             </div>
-                            <Button type="submit" isLoading={loading} >
-                                {
-                                    itemId ? "Update Item" : "Create Item"
-                                }
+                            <Button type="submit" isLoading={loading}>
+                                {itemId ? 'Update Item' : 'Create Item'}
                             </Button>
                         </CardContent>
                     </Card>
                 </form>
             </Form>
         </div>
-    )
+    );
 }
 
 export default ItemForm

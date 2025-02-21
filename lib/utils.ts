@@ -1,3 +1,4 @@
+import { ITEM_STOCK_STATUS } from "@/components/item-stock-status";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
@@ -124,3 +125,15 @@ export function debounce(func: (...args: unknown[]) => void, wait: number) {
         timeout = setTimeout(later, wait)
     }
 }
+
+  
+
+export const itemStockStatus = (
+    currentStock: number,
+    safetyStock: number
+): ITEM_STOCK_STATUS => {
+    let status: ITEM_STOCK_STATUS = 'GOOD';
+    if (safetyStock === 0) status = 'DENGER';
+    if (safetyStock >= currentStock) status = 'WARNING';
+    return status;
+};
