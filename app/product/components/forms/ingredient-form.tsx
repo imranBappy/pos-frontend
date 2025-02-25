@@ -50,7 +50,7 @@ export function IngredientForm({ productId }: { productId?: string }) {
             const newItems: ITEMS_TYPE = new Map()
             const ingredients = res?.ingredients?.edges;
             ingredients.forEach(({ node }: { node: INGREDIENT_QUERY }) => {
-                newItems.set(node.item.id, { id: node.id, quantity: node.quantity, price: 0 })
+                newItems.set(node.item.id, { id: node.id, quantity: node.quantity, price: 0, vat:0 })
             })
             addItems(newItems)
         },
