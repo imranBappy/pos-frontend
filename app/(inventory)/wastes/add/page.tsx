@@ -1,10 +1,10 @@
 import React from 'react';
-import UnitForm from '../../components/forms/unit-form';
+import WasteAdd from '../../components/waste-add/waste-add';
 
 const page = () => {
     return (
-        <div>
-            <UnitForm />
+        <div className='p-3'>
+            <WasteAdd />
         </div>
     );
 };

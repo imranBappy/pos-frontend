@@ -49,15 +49,17 @@ export const WasteDataTable = () => {
     }
     );
 
-    const wastes: WASTE_TYPE[] = res?.wastes?.edges?.map(({ node }: { node: WASTE_TYPE }) => ({ // Use WASTE_TYPE
-        id: node.id,
-        date: node.date,
-        responsible: node.responsible,
-        note: node.note,
-        totalLossAmount: node.totalLossAmount,
-        createdAt: node.createdAt,
-        updatedAt: node.updatedAt,
-    })) || [];
+    const wastes: WASTE_TYPE[] =
+        res?.wastes?.edges?.map(({ node }: { node: WASTE_TYPE }) => ({
+            // Use WASTE_TYPE
+            id: node.id,
+            date: node.date,
+            responsible: node.responsible,
+            note: node.notes,
+            totalLossAmount: node.estimatedCost,
+            createdAt: node.createdAt,
+            updatedAt: node.updatedAt,
+        })) || [];
 
     const table = useReactTable({
         data: wastes, // Use wastes data

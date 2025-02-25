@@ -9,7 +9,7 @@ const ItemAddForm = ({ items, isForProduct }: { items: OPTION_TYPE[], isForProdu
     const selectedItems = useStore((store) => store.items)
     const addItem = useStore((store) => store.addItem)
     const clearItems = useStore((store) => store.clearItems)
-    const remoteItem = useStore((store) => store.remoteItem)
+    const remoteItem = useStore((store) => store.removeItem)
 
     return (
         <div className='mb-5'>

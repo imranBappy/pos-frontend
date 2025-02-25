@@ -4,24 +4,62 @@ import { gql } from "@apollo/client";
 
 // supplier-invoice/queries.ts
 export const SUPPLIER_INVOICE_QUERY = gql`
-    query SupplierInvoiceQuery($id: ID!) {
+    query MyQuery($id: ID!, $first: Int) {
         supplierInvoice(id: $id) {
-            id
+            amount
+            createdAt
             due
             duePaymentDate
-            invoiceNumber
-            invoiceImage
-            amount
-            status
-            paidAmount
             finalAmount
+            id
+            invoiceImage
+            invoiceNumber
+            paidAmount
+            parchageItems(first: $first) {
+                totalCount
+                edges {
+                    node {
+                        createdAt
+                        id
+                        price
+                        quantity
+                        item {
+                            id
+                            image
+                            vat
+                            stock
+                            sku
+                            name
+                        }
+                    }
+                }
+            }
             poNumber
+            status
             supplier {
+                address
+                branch
+                contactPerson
+                createdAt
+                emailAddress
                 id
                 name
+                phoneNumber
+                whatsappNumber
             }
-            createdAt
-            updatedAt
+            payments {
+                totalCount
+                edges {
+                    node {
+                        amount
+                        id
+                        createdAt
+                        paymentMethod
+                        status
+                        trxId
+                    }
+                }
+            }
         }
     }
 `;

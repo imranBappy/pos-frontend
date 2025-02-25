@@ -91,6 +91,7 @@ export const ITEM_QUERY = gql`
             name
             sku
             stock
+            image
             currentStock
             unit {
                 name

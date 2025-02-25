@@ -24,7 +24,7 @@ const Items = ({ filters }: POSCategoriesProps) => {
     const quantity = selectedItems.get(item.id)?.quantity || 0;
     const vat = selectedItems.get(item.id)?.vat || 0;
     addItem(
-      item.id,
+      item.id, // key for map
       quantity + 1,
       1,
       selectedItems.get(item.id)?.id,

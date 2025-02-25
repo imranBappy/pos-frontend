@@ -66,7 +66,7 @@ const SupplierPaymentModal = ({ modalState, openBtnClassName = 'w-full', id, var
     const { data: orderRes, loading } = useQuery(SUPPLIER_INVOICE_QUERY, {
         variables: { id: Number(_orderId) },
         onCompleted: (res) => {
-            paymentForm.setValue('amount', `${parseInt(res?.supplierInvoice?.amount) ? toFixed(res?.supplierInvoice?.amount) : toFixed(res?.supplierInvoice?.finalAmount)}`)
+            paymentForm.setValue('amount', `${parseInt(res?.supplierInvoice?.amount) ? toFixed(res?.supplierInvoice?.due) : toFixed(res?.supplierInvoice?.finalAmount)}`)
         },
         skip: !_orderId
     });
@@ -172,18 +172,24 @@ const SupplierPaymentModal = ({ modalState, openBtnClassName = 'w-full', id, var
         <Modal
             openBtnClassName={openBtnClassName}
             openBtnName={openBtnName}
-            title='Payment'
-            className='max-w-xl'
+            title="Payment"
+            className="max-w-xl"
             disabled={isLoading || disabled}
             variant={variant}
             isCloseBtn={false}
-            open={(isModelOpen && !disabled)}
-            onOpenChange={(value) => value ? null : setIsModalOpen(value)}
-            // onOpenChange={() => { }}
+            open={isModelOpen && !disabled}
+            onOpenChange={(value) => {
+                console.log(value);
+                setIsModalOpen(value);
+                // return value ? null : setIsModalOpen(value);
+            }}
             onOpen={onPaymentRequest}
         >
-            <Form  {...paymentForm}>
-                <form onSubmit={paymentForm.handleSubmit(handlePayment)} className="w-full space-y-6 p-4">
+            <Form {...paymentForm}>
+                <form
+                    onSubmit={paymentForm.handleSubmit(handlePayment)}
+                    className="w-full space-y-6 p-4"
+                >
                     {/* Order Information */}
                     <div className="grid grid-cols-2 md:grid-cols-2  gap-4 ">
                         <TextField
@@ -193,46 +199,63 @@ const SupplierPaymentModal = ({ modalState, openBtnClassName = 'w-full', id, var
                             // type='number'
                             placeholder="Enter amount"
                             className="w-full h-11"
-                            itemClassName='w-full'
+                            itemClassName="w-full"
                             rest={{
-                                max: parseInt(orderRes?.supplierInvoice?.due) ? toFixed(orderRes?.supplierInvoice?.due) : toFixed(orderRes?.supplierInvoice?.amount)
+                                max: parseInt(orderRes?.supplierInvoice?.due)
+                                    ? toFixed(orderRes?.supplierInvoice?.due)
+                                    : toFixed(
+                                          orderRes?.supplierInvoice?.amount
+                                      ),
                             }}
                         />
                         <SwitchItem
                             form={paymentForm}
                             name="status"
                             label="Status"
-                            options={PAYMENT_STATUSES_LIST.map((status) => ({ label: status, value: status }))}
+                            options={PAYMENT_STATUSES_LIST.map((status) => ({
+                                label: status,
+                                value: status,
+                            }))}
                             placeholder="Select Status"
                         />
                         <SwitchItem
                             form={paymentForm}
                             name="paymentMethod"
                             label="Payment Method"
-                            options={PAYMENT_METHODS_TYPE.map((item) => ({ label: item, value: item, }))}
+                            options={PAYMENT_METHODS_TYPE.map((item) => ({
+                                label: item,
+                                value: item,
+                            }))}
                             placeholder="Select payment "
                         />
                         <TextField
                             disabled={!currentDue}
                             form={paymentForm}
                             name="duePaymentDate"
-                            label="Next payment date"
-                            placeholder="Next payment date"
-                            type='date'
+                            label="Due Payment Date"
+                            placeholder="Due payment date"
+                            type="date"
                         />
                     </div>
-                    {
-                        currentDue ? <Info
+                    {currentDue ? (
+                        <Info
                             message={`Now your due amount is ${currentDue}.`}
-                        /> : null
-                    }
+                        />
+                    ) : null}
 
-
-                    <Button isLoading={isLoading} >
-                        {
-                            id ? "Payment Update" : "Payment"
-                        }
-                    </Button>
+                    <div className=" flex gap-2 ">
+                        <Button
+                            className="w-28"
+                            type="button"
+                            onClick={() => setIsModalOpen(false)}
+                            variant="outline"
+                        >
+                            {'Close'}
+                        </Button>
+                        <Button isLoading={isLoading}>
+                            {id ? 'Payment Update' : 'Payment'}
+                        </Button>
+                    </div>
                 </form>
             </Form>
         </Modal>

@@ -23,239 +23,234 @@ type NavLinks = {
 const navbarLinks: NavLinks = {
     [ADMIN]: [
         {
-            title: "Dashboard",
-            url: "/",
+            title: 'Dashboard',
+            url: '/',
             icon: SquareTerminal,
             isActive: true,
         },
         {
-            title: "User",
-            url: "/users",
+            title: 'User',
+            url: '/users',
             icon: Users,
             items: [
                 {
-                    title: "User List",
-                    url: "/users",
-                },
-                {
-                    title: "User Dashboard",
-                    url: "#",
+                    title: 'User List',
+                    url: '/users',
                 },
             ],
         },
         {
-            title: "Outlet",
-            url: "/outlets",
+            title: 'Outlet',
+            url: '/outlets',
             icon: Users,
             items: [
                 {
-                    title: "Outlets List",
-                    url: "/outlets",
+                    title: 'Outlets List',
+                    url: '/outlets',
                 },
             ],
         },
         {
-            title: "Product",
-            url: "#",
+            title: 'Product',
+            url: '#',
             icon: Bot,
             items: [
                 {
-                    title: "Product List",
-                    url: "/product",
+                    title: 'Product List',
+                    url: '/product',
                 },
                 {
-                    title: "Category List",
-                    url: "/product/category",
+                    title: 'Category List',
+                    url: '/product/category',
                 },
             ],
         },
         {
-            title: "Order & POS",
-            url: "#",
+            title: 'Order & POS',
+            url: '#',
             icon: SquareTerminal,
             items: [
                 {
-                    title: "Order list",
-                    url: "/orders",
+                    title: 'Order list',
+                    url: '/orders',
                 },
                 {
-                    title: "Payment list",
-                    url: "/orders/payments",
+                    title: 'Payment list',
+                    url: '/orders/payments',
                 },
                 {
-                    title: "POS",
-                    url: "/orders/pos",
+                    title: 'POS',
+                    url: '/orders/pos',
                 },
-
             ],
         },
         {
-            title: "Floor & Table",
-            url: "#",
+            title: 'Floor & Table',
+            url: '#',
             icon: SquareTerminal,
             items: [
                 {
-                    title: "Table View",
-                    url: "/floor/tables-view",
+                    title: 'Table View',
+                    url: '/floor/tables-view',
                 },
                 {
-                    title: "Floor",
-                    url: "/floor",
+                    title: 'Floor',
+                    url: '/floor',
                 },
                 {
-                    title: "Table",
-                    url: "/floor/table",
+                    title: 'Table',
+                    url: '/floor/table',
                 },
 
                 {
-                    title: "Floor Add",
-                    url: "/floor/add",
+                    title: 'Floor Add',
+                    url: '/floor/add',
                 },
                 {
-                    title: "Table Add",
-                    url: "/floor/table/add",
+                    title: 'Table Add',
+                    url: '/floor/table/add',
                 },
             ],
         },
         {
-            title: "Inventory",
-            url: "#",
+            title: 'Inventory',
+            url: '#',
             icon: Store,
             items: [
                 {
-                    title: "Units",
-                    url: "/units",
+                    title: 'Units',
+                    url: '/units',
                 },
                 {
-                    title: "Suppliers",
-                    url: "/suppliers",
+                    title: 'Suppliers',
+                    url: '/suppliers',
                 },
                 {
-                    title: "Supplier Invoice",
-                    url: "/supplier-invoices",
+                    title: 'Supplier Invoice',
+                    url: '/supplier-invoices',
                 },
                 {
-                    title: "Supplier Payment",
-                    url: "/supplier-payments",
+                    title: 'Supplier Payment',
+                    url: '/supplier-payments',
                 },
                 {
-                    title: "Item Categories",
-                    url: "/item-categories",
+                    title: 'Item Categories',
+                    url: '/item-categories',
                 },
                 {
-                    title: "Items",
-                    url: "/items",
+                    title: 'Items',
+                    url: '/items',
                 },
                 {
-                    title: "Waste",
-                    url: "/wastes",
-                }
-
+                    title: 'Waste Categories',
+                    url: '/wastes/categories',
+                },
+                {
+                    title: 'Waste',
+                    url: '/wastes',
+                },
             ],
         },
         {
-            title: "Settings",
-            url: "#",
+            title: 'Settings',
+            url: '#',
             icon: Settings2,
             items: [
                 {
-                    title: "General",
-                    url: "#",
+                    title: 'General',
+                    url: '#',
                 },
                 {
-                    title: "Team",
-                    url: "#",
+                    title: 'Team',
+                    url: '#',
                 },
                 {
-                    title: "Billing",
-                    url: "#",
+                    title: 'Billing',
+                    url: '#',
                 },
                 {
-                    title: "Limits",
-                    url: "#",
+                    title: 'Limits',
+                    url: '#',
                 },
             ],
         },
     ],
     [MANAGER]: [
         {
-            title: "Dashboard",
-            url: "/",
+            title: 'Dashboard',
+            url: '/',
             icon: SquareTerminal,
             isActive: true,
         },
         {
-            title: "Product",
-            url: "#",
+            title: 'Product',
+            url: '#',
             icon: Bot,
             items: [
                 {
-                    title: "Product List",
-                    url: "#",
+                    title: 'Product List',
+                    url: '#',
                 },
                 {
-                    title: "Product Dashboard",
-                    url: "#",
+                    title: 'Product Dashboard',
+                    url: '#',
                 },
                 {
-                    title: "Add Product",
-                    url: "#",
+                    title: 'Add Product',
+                    url: '#',
                 },
             ],
         },
         {
-            title: "Manage Order",
-            url: "#",
+            title: 'Manage Order',
+            url: '#',
             icon: SquareTerminal,
             items: [
                 {
-                    title: "Order list",
-                    url: "#",
+                    title: 'Order list',
+                    url: '#',
                 },
                 {
-                    title: "Counter List",
-                    url: "#",
+                    title: 'Counter List',
+                    url: '#',
                 },
                 {
-                    title: "Complete order",
-                    url: "#",
+                    title: 'Complete order',
+                    url: '#',
                 },
             ],
         },
-
     ],
     [CHEF]: [
         {
-            title: "Dashboard",
-            url: "/",
+            title: 'Dashboard',
+            url: '/',
             icon: SquareTerminal,
             isActive: true,
         },
     ],
     [WAITER]: [
         {
-            title: "Order & POS",
-            url: "#",
+            title: 'Order & POS',
+            url: '#',
             icon: SquareTerminal,
             items: [
                 {
-                    title: "Order list",
-                    url: "/orders",
+                    title: 'Order list',
+                    url: '/orders',
                 },
                 {
-                    title: "Payment list",
-                    url: "/orders/payments",
+                    title: 'Payment list',
+                    url: '/orders/payments',
                 },
                 {
-                    title: "POS",
-                    url: "/orders/pos",
+                    title: 'POS',
+                    url: '/orders/pos',
                 },
-
             ],
-        }
+        },
     ],
-
-}
+};
 
 const getNavLink = (): NavItem[] => {
     try {

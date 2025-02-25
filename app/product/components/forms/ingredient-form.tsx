@@ -93,10 +93,10 @@ export function IngredientForm({ productId }: { productId?: string }) {
                     toast({ description: "Quantity can not be less 1", variant: 'destructive' })
                     return
                 }
-                if (value.price < 1) {
-                    toast({ description: "Price can not be less 0", variant: 'destructive' })
-                    return
-                }
+                // if (value.price < 1) {
+                //     toast({ description: "Price can not be less 0", variant: 'destructive' })
+                //     return
+                // }
             }
 
             // ingredient query
@@ -127,7 +127,7 @@ export function IngredientForm({ productId }: { productId?: string }) {
 
             toast({
                 title: "Success",
-                description: "Invoice created successfully",
+                description: "Ingredient added successfully",
             })
 
             clearItems()

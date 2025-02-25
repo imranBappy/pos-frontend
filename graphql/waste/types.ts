@@ -5,8 +5,8 @@ export interface WASTE_TYPE {
     id: string;
     date: string;
     responsible?: USER_TYPE | null;
-    note?: string;
+    notes?: string;
     createdAt: string;
     updatedAt: string;
-    totalLossAmount: number
+    estimatedCost: number;
 }

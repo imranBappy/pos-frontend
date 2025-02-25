@@ -12,12 +12,30 @@ mutation MyMutation($description: String, $id: String , $image: String , $name: 
 }
 `
 export const ITEM_MUTATION = gql`
-  mutation MyMutation($id: String, $safetyStock: Int!, $category: ID, $name: String!,  $sku: String!, $unit: ID!) {
-  itemCud(
-    input: {id: $id, safetyStock: $safetyStock, category: $category, name: $name, sku: $sku, unit: $unit}
-  ) {
-    message
-    success
-  }
-}
-`
+    mutation MyMutation(
+        $id: String
+        $safetyStock: Int!
+        $category: ID
+        $name: String!
+        $sku: String!
+        $unit: ID!
+        $vat: Float!
+        $image: String = ""
+    ) {
+        itemCud(
+            input: {
+                id: $id
+                safetyStock: $safetyStock
+                category: $category
+                name: $name
+                sku: $sku
+                unit: $unit
+                vat: $vat
+                image: $image
+            }
+        ) {
+            message
+            success
+        }
+    }
+`;

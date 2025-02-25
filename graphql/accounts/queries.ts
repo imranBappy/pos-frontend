@@ -124,16 +124,16 @@ query MyQuery($id: ID, $user: ID) {
 `
 
 export const CUSTOMER_SEARCH_QUERY = gql`
-query MyQuery($search: String, $first: Int) {
-  users(search: $search, first: $first) {
-    totalCount
-    edges {
-      node {
-        id
-        email
-        name
-      }
+    query MyQuery($search: String, $first: Int) {
+        users(search: $search, first: $first) {
+            totalCount
+            edges {
+                node {
+                    id
+                    email
+                    name
+                }
+            }
+        }
     }
-  }
-}
-`
+`;

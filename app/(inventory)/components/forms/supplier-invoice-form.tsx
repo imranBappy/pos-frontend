@@ -105,6 +105,8 @@ export function SupplierInvoiceForm({ invoiceId }: { invoiceId?: string }) {
               id: node.id,
               quantity: node.quantity,
               price: Number(toFixed(node.price)),
+              vat: node.item.vat,
+              name: node.item.name,
             });
           }
         );

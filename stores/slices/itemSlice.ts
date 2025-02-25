@@ -16,7 +16,7 @@ export interface ItemState {
     name?: string,
     vat?:number,
   ) => void;
-  remoteItem: (id: string) => void;
+  removeItem: (id: string) => void;
   clearItems: () => void;
   addItems: (items: ITEMS_TYPE) => void;
 }
@@ -36,7 +36,7 @@ export const itemSlice: StateCreator<ItemState, [], [], ItemState> = (set) => ({
       return { items: updatedItems };
     }),
   addItems: (items) => set({ items: items }),
-  remoteItem: (id: string) =>
+  removeItem: (id: string) =>
     set((state) => {
       const updatedItems = new Map(state.items);
       updatedItems.delete(id);

@@ -13,65 +13,60 @@ import { useMutation, useQuery } from '@apollo/client'
 import { useToast } from "@/hooks/use-toast"
 import { TextareaField, TextField } from "@/components/input"
 import { Button } from "@/components/button"
-import { UNIT_MUTATION } from "@/graphql/unit/mutations"
-import { UNIT_QUERY, UNITS_QUERY } from "@/graphql/unit/queries"
 import { useRouter } from "next/navigation"
+import { WASTE_CATEGORY_QUERY } from "@/graphql/waste/queries"
+import { WASTE_CATEGORIES_MUTATION } from "@/graphql/waste/mutations"
 
+// Define the form schema using Zod
 const formSchema = z.object({
-    name: z.string().min(1, {
+    name: z.string().min(2, {
         message: "Name must be at least 2 characters.",
     }),
     description: z.string().optional(),
 })
 
-function UnitForm({ unitId }: { unitId?: string }) {
+function WasteCategoryForm({ wasteCategoryId }: { wasteCategoryId?: string }) {
     const { toast } = useToast()
     const router = useRouter()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
     })
 
-    const [unitMutation, { loading }] = useMutation(UNIT_MUTATION, {
-        onCompleted: async () => {
-            toast({
-                variant: 'default',
-                description: "Success!",
-            })
-            form.reset()
-            router.push('/units')
-        },
-        onError: (err) => {
-            toast({
-                variant: 'destructive',
-                description: err.message,
-            })
-        },
-        refetchQueries: [{
-            query: UNITS_QUERY, variables: {
-                offset: 0,
-                first: 10,
-            }
-        }],
-        awaitRefetchQueries: true
-    })
+    const [wasteCategoryMutation, { loading }] = useMutation(
+        WASTE_CATEGORIES_MUTATION,
+        {
+            onCompleted: async () => {
+                toast({
+                    variant: 'default',
+                    description: 'Success!',
+                });
+                form.reset();
+                router.push('/wastes/categories');
+            },
+            onError: (err) => {
+                toast({
+                    variant: 'destructive',
+                    description: err.message,
+                });
+            },
+        }
+    );
 
-    useQuery(UNIT_QUERY, {
+    useQuery(WASTE_CATEGORY_QUERY, {
         variables: {
-            id: unitId,
+            id: wasteCategoryId,
         },
         onCompleted: (data) => {
-            console.log({ data });
-
-            form.setValue("name", data.unit.name)
-            form.setValue("description", data.unit.description)
+            form.setValue('name', data.wasteCategory.name);
+            form.setValue('description', data.wasteCategory.description);
         },
-        skip: !unitId,
-    })
+        skip: !wasteCategoryId,
+    });
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
-        await unitMutation({
+        await wasteCategoryMutation({
             variables: {
-                id: unitId,
+                id: wasteCategoryId,
                 name: data.name,
                 description: data.description,
             },
@@ -81,9 +76,9 @@ function UnitForm({ unitId }: { unitId?: string }) {
     return (
         <div>
             <CardHeader>
-                <CardTitle className="text-2xl">{unitId ? "Update Unit" : "Create New Unit"}</CardTitle>
+                <CardTitle className="text-2xl">{wasteCategoryId ? "Update Waste Category" : "Create New Waste Category"}</CardTitle>
                 <CardDescription>
-                    {unitId ? "Update the unit information below." : "Enter the unit information below."}
+                    {wasteCategoryId ? "Update the item category information below." : "Enter the item category information below."}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -94,18 +89,18 @@ function UnitForm({ unitId }: { unitId?: string }) {
                                 form={form}
                                 name="name"
                                 label="Name"
-                                placeholder="Unit Name"
+                                placeholder="Waste Category Name"
                             />
                             <TextareaField
                                 form={form}
                                 name="description"
                                 label="Description"
-                                placeholder="Unit Description"
+                                placeholder="Description"
                             />
                         </div>
                         <div>
-                            <Button className="w-[150px]" isLoading={loading}>
-                                {unitId ? "Update Unit" : "Create Unit"}
+                            <Button className="w-[220px]" isLoading={loading}>
+                                {wasteCategoryId ? "Update Waste Category" : "Create Waste Category"}
                             </Button>
                         </div>
                     </form>
@@ -115,4 +110,4 @@ function UnitForm({ unitId }: { unitId?: string }) {
     )
 }
 
-export default UnitForm
+export default WasteCategoryForm

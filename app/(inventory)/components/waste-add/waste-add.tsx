@@ -1,6 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-import { findVat } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import Button from '@/components/button';
 import { X, Plus } from 'lucide-react';
@@ -8,10 +7,9 @@ import Link from 'next/link';
 import useStore from '@/stores';
 import OrderItemsAndCategory from './order-item-and-category';
 import OrderCartItem from './order-cart-item';
- 
 import OrderItemConfirm from './order-item-confirm';
-import SupplierSearch from '@/components/SupplierSearch';
-import { SUPPLIER_TYPE } from '@/graphql/supplier/types';
+import SearchEmployer from './SearchEmployer';
+import { USER_TYPE } from '@/graphql/accounts';
 
 interface ITEM_TYPE {
     quantity: number;
@@ -22,17 +20,7 @@ interface ITEM_TYPE {
     vat: number;
 }
 
-export const calculateDiscount = (
-    price: number,
-    vat: number,
-    discount: number
-) => {
-    const total = findVat(price, vat) + price;
-    const discountPrice = ((total - discount) / (100 + vat)) * 100;
-    return discountPrice;
-};
-
-const OrderItem = () => {
+const WasteAdd = () => {
     const [isModelOpen, setIsModalOpen] = useState(false);
 
     const selectedItems = useStore((store) => store.items);
@@ -42,19 +30,14 @@ const OrderItem = () => {
         selectedItemsArr.push({ ...item, itemId: key });
     });
 
-    const [selectedUser, setSelectedUser] = useState<SUPPLIER_TYPE>();
+    const [selectedUser, setSelectedUser] = useState<USER_TYPE>();
 
-    let amount = 0;
-    let vat = 0;
-    for (const [, value] of selectedItems) {
-        amount += value.price * value.quantity;
-        vat += value.vat * value.quantity;
-    }
+   
     async function onSubmit() {
         setIsModalOpen(true);
     }
 
-    const handleSelectUser = (newSelectedUser: SUPPLIER_TYPE) => {
+    const handleSelectUser = (newSelectedUser: USER_TYPE) => {
         setSelectedUser(newSelectedUser);
     };
 
@@ -72,7 +55,7 @@ const OrderItem = () => {
                 <div className="p-4 border-b">
                     <div className="space-y-3">
                         {/* Customer Search */}
-                        <SupplierSearch onSelect={handleSelectUser} />
+                        <SearchEmployer onSelect={handleSelectUser} />
                         {/* Customer Info */}
                         <div className="p-3 bg-muted rounded-lg">
                             <div className="flex justify-between items-start">
@@ -80,12 +63,12 @@ const OrderItem = () => {
                                     <p className="font-medium">
                                         {`${
                                             selectedUser?.name ||
-                                            'Unknown Supplier'
+                                            'Responsible Epmployer'
                                         }`}{' '}
                                     </p>
                                     <p className="text-sm text-muted-foreground">
-                                        {selectedUser?.emailAddress ||
-                                            'No email address'}
+                                        {selectedUser?.email ||
+                                            'No selected epmployer'}
                                     </p>
                                 </div>
                                 {!selectedUser ? (
@@ -125,18 +108,7 @@ const OrderItem = () => {
 
                 <div className="p-4 border-t ">
                     <div className="space-y-2">
-                        <div className="flex justify-between">
-                            <span>Subtotal</span>
-                            <span>$ {amount} </span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span>VAT</span>
-                            <span>${vat}</span>
-                        </div>
-                        <div className="flex justify-between font-bold">
-                            <span>Total</span>
-                            <span>$ {amount + vat}</span>
-                        </div>
+                        
                         <div className=" mt-4  flex flex-col gap-2  ">
                             <div className="flex gap-2">
                                 <Button
@@ -146,7 +118,7 @@ const OrderItem = () => {
                                     }}
                                     className="w-full "
                                 >
-                                    Order
+                                    Continue
                                 </Button>
                             </div>
                         </div>
@@ -161,4 +133,4 @@ const OrderItem = () => {
     );
 };
 
-export default OrderItem;
+export default WasteAdd;

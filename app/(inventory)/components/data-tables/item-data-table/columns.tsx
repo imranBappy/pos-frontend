@@ -17,11 +17,11 @@ export const itemColumns: ColumnDef<ITEM_TYPE>[] = [
         accessorKey: 'name',
         header: 'Name',
         cell: ({ row }) => (
-            <div className="capitalize flex gap-2 items-center w-16 ">
+            <div className="capitalize flex gap-2 items-center min-w-20 ">
                 <p className=" text-base">{row.getValue('name')}</p>
                 <ItemStockStatus
                     status={itemStockStatus(
-                        row.getValue('curentStokc'),
+                        row.getValue('currentStock'),
                         row.getValue('safetyStock')
                     )}
                 />

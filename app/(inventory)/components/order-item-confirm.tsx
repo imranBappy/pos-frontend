@@ -8,7 +8,6 @@ import { randomId, toFixed } from "@/lib/utils";
 import Modal from "@/components/modal";
 import {  SUPPLIER_INVOICES_QUERY } from "@/graphql/supplier-invoice/queries";
 import { SUPPLIER_INVOICE_ITEM_MUTATION, SUPPLIER_INVOICE_MUTATION } from "@/graphql/supplier-invoice/mutations";
-import { USER_TYPE } from "@/graphql/accounts";
 import useStore from "@/stores";
 import Button from "@/components/button";
 import { Form } from "@/components/ui";
@@ -17,11 +16,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { TextField } from "@/components/input";
 import { useEffect } from "react";
+import { SUPPLIER_TYPE } from "@/graphql/supplier/types";
 
 
 interface PaymentProps {
-  modalState: [boolean, setIsModalOpen: (value: boolean) => void];
-  selectedUser:USER_TYPE | undefined
+    modalState: [boolean, setIsModalOpen: (value: boolean) => void];
+    selectedUser: SUPPLIER_TYPE | undefined;
 }
 const paymentFormSchema = z.object({
     invoiceNumber: z.string(),
@@ -47,6 +47,7 @@ const OrderItemConfirm = ({ modalState, selectedUser }: PaymentProps) => {
     useEffect(() => {
       orderForm.setValue('invoiceNumber', randomId());
            orderForm.setValue('poNumber', randomId());
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
 
@@ -80,13 +81,13 @@ const OrderItemConfirm = ({ modalState, selectedUser }: PaymentProps) => {
    }
   async function onSubmit(data: ordeFormValues) {
       try {
-          if (!selectedUser?.id) {
-              toast({
-                  description: 'Select supplier or Input invoice image',
-                  variant: 'destructive',
-              });
-              return;
-          }
+        //   if (!selectedUser?.id) {
+        //       toast({
+        //           description: 'Select supplier or Input invoice image',
+        //           variant: 'destructive',
+        //       });
+        //       return;
+        //   }
           if (!selectedItems.size) {
               toast({
                   description: 'Add Minimum 1 item',

@@ -1,16 +1,15 @@
 import React from 'react'
-
 import { Button } from "@/components/ui/button"
 import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogTrigger,
+    AlertDialogFooter,
+    AlertDialogTitle,
+    AlertDialogDescription,
+    AlertDialogCancel,
+} from './ui/alert-dialog';
 
 export type BUTTON_VARIANT_TYPE = "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
 interface ModelProps {
@@ -32,38 +31,42 @@ interface ModelProps {
 
 export function Modal({ onOpenChange,isCloseBtn, open, children, disabled, variant = 'outline', openBtnName, openBtnClassName, title, description, onOpen, className, closeBtnName = 'Close', onClose }: ModelProps) {
     return (
-        <Dialog
-            modal={true}
-            open={open}
-            onOpenChange={onOpenChange}
-        >
-            <DialogTrigger asChild>
-                <Button disabled={disabled} onClick={onOpen} variant={variant} className={`${openBtnClassName}`}>{openBtnName}</Button>
-            </DialogTrigger>
-            <DialogContent
+        <AlertDialog open={open} onOpenChange={onOpenChange}>
+            <AlertDialogTrigger asChild>
+                <Button
+                    disabled={disabled}
+                    onClick={onOpen}
+                    variant={variant}
+                    className={`${openBtnClassName}`}
+                >
+                    {openBtnName}
+                </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent
                 className={`md:max-w-4xl max-w-md ${className}`}
             >
-                <DialogHeader>
-                    <DialogTitle>{title}</DialogTitle>
-                    <DialogDescription>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>{title}</AlertDialogTitle>
+                    <AlertDialogDescription>
                         {description}
-                    </DialogDescription>
-                </DialogHeader>
-                <div className="flex items-center space-x-2 ">
-                    {children}
-                </div>
-                {
-                    isCloseBtn && <DialogFooter className="sm:justify-start">
-                        <DialogClose asChild>
-                            <Button type="button" onClick={onClose} variant="secondary">
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <div className="flex items-center space-x-2 ">{children}</div>
+                {isCloseBtn && (
+                    <AlertDialogFooter className="sm:justify-start">
+                        <AlertDialogCancel asChild>
+                            <Button
+                                type="button"
+                                onClick={onClose}
+                                variant="secondary"
+                            >
                                 {closeBtnName}
                             </Button>
-                        </DialogClose>
-                    </DialogFooter> 
-                }
-              
-            </DialogContent>
-        </Dialog>
-    )
+                        </AlertDialogCancel>
+                    </AlertDialogFooter>
+                )}
+            </AlertDialogContent>
+        </AlertDialog>
+    );
 }
 export default Modal

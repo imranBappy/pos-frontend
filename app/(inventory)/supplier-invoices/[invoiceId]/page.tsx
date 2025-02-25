@@ -1,10 +1,10 @@
 import React from 'react';
-import SupplierInvoiceForm from '../../components/forms/supplier-invoice-form';
+import InvoiceDetails from '../../components/invoice-details';
 
 const page = ({ params }: { params: { invoiceId: string } }) => {
     return (
         <div>
-            <SupplierInvoiceForm invoiceId={params.invoiceId} />
+            <InvoiceDetails invoiceId={params.invoiceId} />
         </div>
     );
 };
