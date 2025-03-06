@@ -25,9 +25,8 @@ interface PaymentProps {
     selectedUser: USER_TYPE | undefined;
 }
 const paymentFormSchema = z.object({
-    invoiceNumber: z.string(),
-    date: z.string().optional(),
-    category: z.string().optional(),
+    date: z.string(),
+    category: z.string(),
     notes: z.string().optional(),
 });
 type ordeFormValues = z.infer<typeof paymentFormSchema>;
@@ -36,11 +35,11 @@ interface PaymentProps {
     modalState: [boolean, setIsModalOpen: (value: boolean) => void];
 }
 
-const OrderItemConfirm = ({ modalState, selectedUser }: PaymentProps) => {
+const WasteItemConfirm = ({ modalState, selectedUser }: PaymentProps) => {
     const [isModelOpen, setIsModalOpen] = modalState;
     const selectedItems = useStore((store) => store.items);
     const clearItems = useStore((store) => store.clearItems);
-
+   
     const orderForm = useForm<ordeFormValues>({
         resolver: zodResolver(paymentFormSchema),
     });
@@ -78,7 +77,6 @@ const OrderItemConfirm = ({ modalState, selectedUser }: PaymentProps) => {
 
     async function onSubmit(data: ordeFormValues) {
         try {
-          
             if (!selectedItems.size) {
                 toast({
                     description: 'Add Minimum 1 item',
@@ -86,7 +84,7 @@ const OrderItemConfirm = ({ modalState, selectedUser }: PaymentProps) => {
                 });
                 return;
             }
-            // validation parchage items
+            // validation purchase items
             for (const [, value] of selectedItems) {
                 if (value.quantity < 1) {
                     toast({
@@ -108,7 +106,6 @@ const OrderItemConfirm = ({ modalState, selectedUser }: PaymentProps) => {
             await invoiceMutation({
                 variables: {
                     input: {
-                        invoice: data.invoiceNumber,
                         date: data.date,
                         responsible: selectedUser?.id,
                         notes: data.notes,
@@ -137,7 +134,7 @@ const OrderItemConfirm = ({ modalState, selectedUser }: PaymentProps) => {
         }
     }
 
-    if (categories_loading) {
+    if (categories_loading ) {
         return <Loading />;
     }
 
@@ -160,14 +157,7 @@ const OrderItemConfirm = ({ modalState, selectedUser }: PaymentProps) => {
                         <div className="w-full  ">
                             <div className="mb-10 flex flex-col gap-5">
                                 <div className="w-full  flex  gap-2">
-                                    <div className="w-full ">
-                                        <TextField
-                                            form={orderForm}
-                                            name="invoiceNumber"
-                                            label="Invoice Number"
-                                            placeholder="Enter Invoice Number"
-                                        />
-                                    </div>
+                                  
                                     <div className="w-full ">
                                         <TextField
                                             form={orderForm}
@@ -200,15 +190,10 @@ const OrderItemConfirm = ({ modalState, selectedUser }: PaymentProps) => {
                                     <span>Total Item : </span>
                                     <span> {selectedItems.size} </span>
                                 </div>
-                               
                             </div>
 
                             <div className="mt-7 flex justify-end">
-                                <Button
-                                    isLoading={
-                                        create_loading 
-                                    }
-                                >
+                                <Button isLoading={create_loading}>
                                     Confirm
                                 </Button>
                             </div>
@@ -220,4 +205,4 @@ const OrderItemConfirm = ({ modalState, selectedUser }: PaymentProps) => {
     );
 };
 
-export default OrderItemConfirm;
+export default WasteItemConfirm;

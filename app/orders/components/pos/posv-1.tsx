@@ -2,10 +2,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import {
+    ORDER_PRODUCT_MUTATION,
     PRODUCT_TYPE,
     ORDERS_QUERY,
     ORDER_QUERY,
+    DELETE_ORDER_PRODUCT,
     FLOOR_TABLES_TYPE,
+    CHECK_INGREDIENT_AVAILABLE,
     ORDER_MUTATION_V2,
 } from '@/graphql/product';
 import { cn, findVat, randomId, toFixed } from '@/lib/utils';
@@ -19,7 +22,7 @@ import { SidebarContext } from '@/components/ui/sidebar';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { X, LampFloor, Plus, Search } from 'lucide-react';
 import PaymentModal from '../order-payment/payment-modal';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import DiscountModel from './DiscountModel';
 import POSCategories from './POS-categories';
 import POSProducts from './POS-products';
@@ -85,10 +88,8 @@ const Pos = () => {
     const debouncedSearch = useDebouncedValue(filters.search, 500);
     const tableState = useStore((store) => store.table);
     const clearTable = useStore((store) => store.clearTable);
-    const addTables = useStore((store) => store.addTables);
     const outlets = useStore((store) => store.outlets);
     const activeOutlet = outlets[0];
-    const router=  useRouter()
 
     const cart = useStore((store) => store.cart);
     const addCart = useStore((store) => store.addCart);
@@ -108,7 +109,6 @@ const Pos = () => {
         {
             onCompleted: ({ orderCuv2 }) => {
                 setOrderId(orderCuv2?.order?.id);
-                router.push('/orders/pos');
             },
             refetchQueries: [
                 {
@@ -122,10 +122,14 @@ const Pos = () => {
             awaitRefetchQueries: true,
         }
     );
+    const [deleteOrderProduct] = useMutation(DELETE_ORDER_PRODUCT);
+    const [createOrderProduct, { loading: createOrderProductLoading }] =
+        useMutation(ORDER_PRODUCT_MUTATION);
+    const [checkIngredientAvailable, { loading: checking }] = useMutation(
+        CHECK_INGREDIENT_AVAILABLE
+    );
 
- 
-
-    useQuery(ORDER_QUERY, {
+    const { data: orderRes } = useQuery(ORDER_QUERY, {
         variables: {
             id: id,
         },
@@ -149,21 +153,8 @@ const Pos = () => {
                         : 0,
                 })
             );
+            console.log({ items });
 
-            const bookedTables = order?.tableBookings?.edges?.map(
-                ({ node }: { node: FLOOR_TABLES_TYPE }) => ({
-                    id: node.floorTable?.id,
-                    name: node.floorTable?.name,
-                    createdAt: node.floorTable?.createdAt,
-                    isActive: node.floorTable?.isActive,
-                    isBooked: node.floorTable?.isBooked,
-                })
-            );
-            if (bookedTables?.length) {
-                addTables(bookedTables)
-            }
-            
-            
             addCarts(items);
         },
     });
@@ -197,6 +188,159 @@ const Pos = () => {
     const finalAmount = (calculatePrice(cart) + calculateVat(cart)).toFixed(2);
     const subTotal = calculatePrice(cart)?.toFixed(2);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const handlePlaceOrder = async () => {
+        try {
+            setOrderId(undefined);
+            if (!cart.length) {
+                toast({
+                    title: 'Error',
+                    description: 'Cart is empty!',
+                    variant: 'destructive',
+                });
+                return;
+            }
+            const finalAmount = (
+                calculatePrice(cart) + calculateVat(cart)
+            ).toFixed(2);
+            const amount = calculatePrice(cart).toFixed(2);
+
+            const tableBookings = tableState.map((item: FLOOR_TABLES_TYPE) => [
+                item.id,
+                60,
+            ]);
+            if (Number(amount) < 0) {
+                toast({
+                    title: 'Error',
+                    description: "Negative can't be total amount! ",
+                    variant: 'destructive',
+                });
+                return;
+            }
+
+            // check ingredient
+            const res = await checkIngredientAvailable({
+                variables: {
+                    orderProducts: cart.map((item) => ({
+                        product: item.id,
+                        quantity: item.quantity,
+                    })),
+                },
+            });
+            if (!res?.data?.checkIngredientAvailable?.success) {
+                toast({
+                    title: 'Stock Error',
+                    description: res?.data?.checkIngredientAvailable?.message,
+                    variant: 'destructive',
+                });
+                return;
+            }
+
+            const order = await createOrder({
+                variables: {
+                    id: id ? id : undefined,
+                    orderId: searchParams.get('orderId')
+                        ? `#${searchParams.get('orderId')}`
+                        : undefined,
+                    status: 'PENDING',
+                    paymentMethod: 'CASH',
+                    finalAmount: finalAmount,
+                    type: 'DINE_IN',
+                    outlet: activeOutlet.id,
+                    user: selectedUser?.id,
+                    tableBookings: tableBookings.length
+                        ? JSON.stringify(tableBookings)
+                        : null,
+                    isCart: true,
+                    amount: amount,
+                },
+            });
+            if (!order.data.orderCud.order.id) {
+                toast({
+                    title: 'Error',
+                    description: 'There is an error!',
+                    variant: 'destructive',
+                });
+                return;
+            }
+            await Promise.all(
+                cart.map((item) =>
+                    createOrderProduct({
+                        variables: {
+                            id: item?.itemId ? item?.itemId : undefined,
+                            price: parseFloat(`${item.price}`).toFixed(2),
+                            product: item.id,
+                            quantity: item.quantity,
+                            discount: item.discount.toFixed(2),
+                            order: order.data.orderCud.order.id,
+                            vat: item.vat,
+                            
+                        },
+                    })
+                )
+            );
+
+            // delete order item
+            if (id) {
+                const orderItemsDelete: string[] = [];
+                orderRes.order?.items?.edges.forEach(
+                    ({ node }: { node: CARD_TYPE }) => {
+                        if (
+                            !cart.find(
+                                (item) =>
+                                    item?.itemId?.toString() ===
+                                    node?.id.toString()
+                            )
+                        ) {
+                            orderItemsDelete.push(node?.id);
+                        }
+                        if (
+                            cart.find(
+                                (item) =>
+                                    item?.itemId?.toString() ===
+                                    node?.id.toString()
+                            )?.quantity === 0
+                        ) {
+                            orderItemsDelete.push(node?.id);
+                        }
+                    }
+                );
+
+                await Promise.all(
+                    orderItemsDelete.map((itemId) =>
+                        deleteOrderProduct({
+                            variables: {
+                                id: itemId,
+                            },
+                        })
+                    )
+                );
+            }
+
+            // toast({
+            //     title: "Order Created",
+            //     description: "Order has been created successfully",
+            // })
+
+            clearCart();
+            setSelectedUser(undefined);
+
+            // setFloorTable({
+            //     floor: "",
+            //     table: ""
+            // })
+            clearTable();
+        } catch (error) {
+            console.log(error);
+
+            toast({
+                title: 'Error',
+                description: (error as Error).message,
+                variant: 'destructive',
+            });
+        }
+    };
+
     const handlePlaceOrderV2 = async () => {
         try {
             setOrderId(undefined);
@@ -209,9 +353,6 @@ const Pos = () => {
                 return;
             }
 
-            console.log(tableState);
-            // return;
-            
             const amount = calculatePrice(cart).toFixed(2);
 
             const tableBookings = tableState.map((item: FLOOR_TABLES_TYPE) => [
@@ -247,15 +388,12 @@ const Pos = () => {
                     })),
                 },
             };
-                console.log(variables);
-                
-         
             
-            await createOrder({
+            const order = await createOrder({
                 variables: variables,
             });
 
-         
+            console.log(order);
 
             clearCart();
             setSelectedUser(undefined);
@@ -274,8 +412,6 @@ const Pos = () => {
     const handleSelectUser = (newSelectedUser: USER_TYPE) => {
         setSelectedUser(newSelectedUser);
     };
-
-    const isDisableModel =  createOrderLoading;
 
     useEffect(() => {
         handleFilterChange('search')(debouncedSearch);
@@ -444,20 +580,22 @@ const Pos = () => {
                             <DiscountModel />
                             <div className="flex gap-2">
                                 <PaymentModal
-                                
                                     variant="outline"
                                     openBtnName="Order"
                                     orderId={orderId}
-                                    // disabled={
-                                    //     createOrderLoading
-                                    // }
-                                    disabled={isDisableModel}
+                                    disabled={
+                                        createOrderLoading ||
+                                        checking ||
+                                        createOrderProductLoading
+                                    }
                                     onPaymentRequest={handlePlaceOrderV2}
                                 />
                                 <Button
                                     disabled={cart?.length === 0}
                                     isLoading={
-                                        createOrderLoading
+                                        createOrderLoading ||
+                                        createOrderProductLoading ||
+                                        checking
                                     }
                                     onClick={() => {
                                         handlePlaceOrderV2();

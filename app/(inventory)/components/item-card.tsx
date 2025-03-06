@@ -1,26 +1,25 @@
-import { Card } from "@/components/ui";
-import Image from "@/components/ui/image";
-import { ITEM_TYPE } from "@/graphql/item/types";
-import { cn, itemStockStatus } from "@/lib/utils";
-import Link from "next/link";
-import ItemStockStatus from "@/components/item-stock-status";
+import { Card } from '@/components/ui';
+import Image from '@/components/ui/image';
+import { ITEM_TYPE } from '@/graphql/item/types';
+import { cn, itemStockStatus, toFixed } from '@/lib/utils';
+import Link from 'next/link';
+import ItemStockStatus from '@/components/item-stock-status';
 interface PROPS_TYPE {
-    selected?: boolean
-    onClick?: () => void,
-    item:ITEM_TYPE
+    selected?: boolean;
+    onClick?: () => void;
+    item: ITEM_TYPE;
 }
 
-const ItemCard = ({  onClick, selected, item }: PROPS_TYPE) => {
+const ItemCard = ({ onClick, selected, item }: PROPS_TYPE) => {
     const {
-        image="",
+        image = '',
         name,
-        stock,
         unit,
         safetyStock,
-        currentStock
-    }:ITEM_TYPE  = item
- 
-    
+        currentStock,
+        sku,
+    }: ITEM_TYPE = item;
+
     return (
         <Card
             onClick={onClick}
@@ -40,8 +39,12 @@ const ItemCard = ({  onClick, selected, item }: PROPS_TYPE) => {
                 <p className="line-clamp-2  ">{name}</p>
             </Link>
             <p className="text-sm text-muted-foreground flex  gap-2 items-center">
+                <span>SKU</span>
+                <span>{sku}</span>
+            </p>
+            <p className="text-sm text-muted-foreground flex  gap-2 items-center">
                 {' '}
-                <span>{`${stock} ${unit.name}`}</span>
+                <span>{`${toFixed(currentStock, 3)} ${unit.name}`}</span>
                 <ItemStockStatus
                     status={itemStockStatus(currentStock, safetyStock)}
                 />

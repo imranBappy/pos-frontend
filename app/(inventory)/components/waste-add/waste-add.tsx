@@ -5,9 +5,9 @@ import Button from '@/components/button';
 import { X, Plus } from 'lucide-react';
 import Link from 'next/link';
 import useStore from '@/stores';
-import OrderItemsAndCategory from './order-item-and-category';
-import OrderCartItem from './order-cart-item';
-import OrderItemConfirm from './order-item-confirm';
+import OrderItemsAndCategory from './waste-item-and-category';
+import OrderCartItem from './waste-cart-item';
+import WasteItemConfirm from './order-item-confirm';
 import SearchEmployer from './SearchEmployer';
 import { USER_TYPE } from '@/graphql/accounts';
 
@@ -63,12 +63,12 @@ const WasteAdd = () => {
                                     <p className="font-medium">
                                         {`${
                                             selectedUser?.name ||
-                                            'Responsible Epmployer'
+                                            'Responsible employe'
                                         }`}{' '}
                                     </p>
                                     <p className="text-sm text-muted-foreground">
                                         {selectedUser?.email ||
-                                            'No selected epmployer'}
+                                            'No selected employe'}
                                     </p>
                                 </div>
                                 {!selectedUser ? (
@@ -108,7 +108,6 @@ const WasteAdd = () => {
 
                 <div className="p-4 border-t ">
                     <div className="space-y-2">
-                        
                         <div className=" mt-4  flex flex-col gap-2  ">
                             <div className="flex gap-2">
                                 <Button
@@ -125,7 +124,7 @@ const WasteAdd = () => {
                     </div>
                 </div>
             </Card>
-            <OrderItemConfirm
+            <WasteItemConfirm
                 selectedUser={selectedUser}
                 modalState={[isModelOpen, setIsModalOpen]}
             />

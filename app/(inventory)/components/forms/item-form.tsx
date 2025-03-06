@@ -30,7 +30,7 @@ import { ITEM_CATEGORES_QUERY } from '@/graphql/item-category/queries';
 import { UNIT_TYPE } from '@/graphql/unit/types';
 import { UNITS_QUERY } from '@/graphql/unit/queries';
 import { useEffect, useState } from 'react';
-import { Input } from '@/components/ui';
+import { Input, Loading } from '@/components/ui';
 import Image from 'next/image';
 import uploadImageToS3, { deleteImageFromS3 } from '@/lib/s3';
 const VAT = process.env.NEXT_PUBLIC_VAT || '5';
@@ -98,7 +98,7 @@ export function ItemForm({ itemId }: { itemId?: string }) {
         ],
     });
 
-    const { data: itemRes } = useQuery(ITEM_QUERY, {
+    const { data: itemRes, loading:itemQueryLoading } = useQuery(ITEM_QUERY, {
         variables: {
             id: itemId,
         },
@@ -108,12 +108,14 @@ export function ItemForm({ itemId }: { itemId?: string }) {
             form.setValue('vat', data.itemvat);
             form.setValue('safetyStock', String(data.item.safetyStock));
             form.setValue('sku', data.item.sku);
-            
+
+            console.log(data.item);
+
             if (data.item.category) {
                 form.setValue('category', data.item.category?.id);
             }
             if (data.item.image) {
-                form.setValue('category', data.item.image);
+                setImagePreviewUrl(data.item.image || '');
             }
         },
         skip: !itemId,
@@ -168,9 +170,7 @@ export function ItemForm({ itemId }: { itemId?: string }) {
 
         if (data.image && itemRes?.item?.image) {
             // delete old image
-            const deleted = await deleteImageFromS3(
-                category_res.category.image
-            );
+            const deleted = await deleteImageFromS3(itemRes?.item?.image);
             if (!deleted) throw new Error('Failed to delete image');
         }
         if (data.image) {
@@ -187,7 +187,7 @@ export function ItemForm({ itemId }: { itemId?: string }) {
                 safetyStock: Number(data.safetyStock),
                 sku: data.sku,
                 vat: parseFloat(data.vat),
-                image: uploadedFiles,
+                image: uploadedFiles ? uploadedFiles : imagePreviewUrl,
             },
         });
 
@@ -208,6 +208,8 @@ export function ItemForm({ itemId }: { itemId?: string }) {
             URL.revokeObjectURL(imagePreviewUrl);
         };
     }, [imagePreviewUrl]);
+
+    if (itemQueryLoading || category_loading) return <Loading />;
 
     return (
         <div>

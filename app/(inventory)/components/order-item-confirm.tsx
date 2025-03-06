@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { TextField } from "@/components/input";
 import { useEffect } from "react";
 import { SUPPLIER_TYPE } from "@/graphql/supplier/types";
+import { ITEMS_QUERY } from "@/graphql/item/queries";
 
 
 interface PaymentProps {
@@ -44,33 +45,45 @@ const OrderItemConfirm = ({ modalState, selectedUser }: PaymentProps) => {
       })
  
 
-    useEffect(() => {
-      orderForm.setValue('invoiceNumber', randomId());
-           orderForm.setValue('poNumber', randomId());
-   // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
+   
 
 
   const [invoiceMutation, { loading: create_loading }] = useMutation(
-    SUPPLIER_INVOICE_MUTATION,
-    {
-      refetchQueries: [
-        {
-          query: SUPPLIER_INVOICES_QUERY,
-          variables: {
-            offset: 0,
-            first: 10,
-            search: "",
-          },  
-        },
-      ],
-      awaitRefetchQueries: true,
-    }
+      SUPPLIER_INVOICE_MUTATION,
+     
   );
+
+   useEffect(() => {
+       orderForm.setValue('invoiceNumber', randomId());
+       orderForm.setValue('poNumber', randomId());
+       // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [create_loading]);
  
   // Invoice Items Mutation
   const [invoiceItemMutation, { loading: itemCreate_loading }] = useMutation(
-    SUPPLIER_INVOICE_ITEM_MUTATION
+      SUPPLIER_INVOICE_ITEM_MUTATION,
+      {
+          refetchQueries: [
+              {
+                  query: SUPPLIER_INVOICES_QUERY,
+                  variables: {
+                      offset: 0,
+                      first: 10,
+                      search: '',
+                  },
+              },
+              {
+                  query: ITEMS_QUERY,
+                  variables: {
+                      offset: 0,
+                      first: 30,
+                      category: null,
+                      orderBy: '-createdAt',
+                  },
+              },
+          ],
+          awaitRefetchQueries: true,
+      }
   );
 
    let amount = 0;
@@ -95,7 +108,7 @@ const OrderItemConfirm = ({ modalState, selectedUser }: PaymentProps) => {
               });
               return;
           }
-          // validation parchage items
+          // validation purchase items
           for (const [, value] of selectedItems) {
               if (value.quantity < 1) {
                   toast({
@@ -125,14 +138,13 @@ const OrderItemConfirm = ({ modalState, selectedUser }: PaymentProps) => {
                   invoiceNumber: data.invoiceNumber,
                   duePaymentDate: data.duePaymentDate,
                   poNumber: data.poNumber,
-
-                  finalAmount: amount + vat,
-                  amount: amount, // without vat
+                  finalAmount: `${toFixed(amount + vat)}`,
+                  amount: `${toFixed(amount)}`, // without vat
                   paidAmount: 0, // new paided amount
                   invoiceImage: undefined,
                   supplier: selectedUser?.id,
                   status: PAYMENT_STATUSES.PENDING,
-                  due: toFixed(amount),
+                  due: `${toFixed(amount)}`,
               },
           });
 
@@ -142,7 +154,7 @@ const OrderItemConfirm = ({ modalState, selectedUser }: PaymentProps) => {
                       id: value.id ? value.id : undefined,
                       item: id,
                       quantity: value.quantity,
-                      price: value.price,
+                      price: `${value.price}`,
                       supplierInvoice:
                           res.data?.supplierInvoiceCud.supplierInvoice.id,
                       vat: value.vat,

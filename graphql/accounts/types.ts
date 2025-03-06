@@ -13,18 +13,19 @@ export interface ADDRESS_TYPE {
     user?:string
 }
 export interface USER_TYPE {
-    id: string
-    name: string
-    email: string
-    phone?: string
+    id: string;
+    name: string;
+    email: string;
+    phone?: string;
+    createdAt?:string
     role: {
-        id: string
-        name: string
-    }
-    gender: string
-    isActive: boolean
-    isVerified: boolean
-    address: ADDRESS_TYPE
+        id: string;
+        name: string;
+    };
+    gender: string;
+    isActive: boolean;
+    isVerified: boolean;
+    address: ADDRESS_TYPE;
 }
 
 export interface USERS_TYPE {

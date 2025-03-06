@@ -26,6 +26,7 @@ export const itemSlice: StateCreator<ItemState, [], [], ItemState> = (set) => ({
   addItem: (id, quantity, price, item = undefined, name, vat) =>
     set((state) => {
       const updatedItems = new Map(state.items);
+      
       updatedItems.set(id, {
         id: item,
         quantity: quantity,

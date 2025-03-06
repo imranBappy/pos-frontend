@@ -62,7 +62,7 @@ export const ITEMS_QUERY = gql`
                     sku
                     currentStock
                     stockLevel
-                    parchageItems {
+                    purchaseItems {
                         totalCount
                     }
                     unit {

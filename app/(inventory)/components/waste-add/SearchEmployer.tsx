@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import SearchableFiled from '@/components/SearchableFiled';
-import { CUSTOMER_SEARCH_QUERY } from '@/graphql/accounts/queries';
+import {  EMPLOYEE_SEARCH_QUERY } from '@/graphql/accounts/queries';
 import { USER_TYPE } from '@/graphql/accounts';
 
 const SearchEmployer = ({
@@ -15,7 +15,7 @@ const SearchEmployer = ({
     const [search, setSearch] = useState('');
     const [value, setValue] = useState('');
 
-    const { data, loading } = useQuery(CUSTOMER_SEARCH_QUERY, {
+    const { data, loading } = useQuery(EMPLOYEE_SEARCH_QUERY, {
         variables: {
             search: search,
             first: 30,
@@ -40,7 +40,7 @@ const SearchEmployer = ({
                 key={user.id}
                 className="text-sm"
             >
-                {`${user.name} - ${user.address}`}
+                {`${user.name} - ${user.email}`}
             </div>
             <Separator className="my-2" />
         </>

@@ -10,6 +10,7 @@ import {
     AlertDialogDescription,
     AlertDialogCancel,
 } from './ui/alert-dialog';
+import { X } from 'lucide-react';
 
 export type BUTTON_VARIANT_TYPE = "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
 interface ModelProps {
@@ -46,9 +47,18 @@ export function Modal({ onOpenChange,isCloseBtn, open, children, disabled, varia
                 className={`md:max-w-4xl max-w-md ${className}`}
             >
                 <AlertDialogHeader>
-                    <AlertDialogTitle>{title}</AlertDialogTitle>
+                    <div>
+                        <AlertDialogTitle>{title}</AlertDialogTitle>
+                        <Button
+                            onClick={() => onOpenChange && onOpenChange(false)}
+                            variant="ghost"
+                            className="absolute top-0 right-0 mt-2 mr-2"
+                        >
+                            <X />
+                        </Button>
+                    </div>
                     <AlertDialogDescription>
-                        {description}
+                        {description || 'Are you sure you want to do this?'}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <div className="flex items-center space-x-2 ">{children}</div>

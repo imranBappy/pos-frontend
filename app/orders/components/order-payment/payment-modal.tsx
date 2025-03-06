@@ -177,6 +177,7 @@ const PaymentModal = ({ openBtnClassName = 'w-full', id, variant = 'default', or
     const order = orderRes?.order;
 
     const handlePayment = async (data: paymentFormValues) => {
+        
         try {
             if (!_orderId && !id) {
                 toast({
@@ -185,21 +186,24 @@ const PaymentModal = ({ openBtnClassName = 'w-full', id, variant = 'default', or
                 })
                 return;
             }
-            if (Number(parseFloat(`${data.amount}`).toFixed(2)) < 1) {
+            if (Number(toFixed(data.amount)) < 1) {
                 toast({
                     title: 'Amount Error',
                     description: 'Minmum amount 1',
-                    variant: 'destructive'
-                })
+                    variant: 'destructive',
+                });
                 return;
             }
-
-            if (parseFloat(parseFloat(`${data.amount}`).toFixed(2)) > parseFloat(order.finalAmount)) {
+                
+            if (
+                Number(toFixed(data.amount)) >
+                Number(toFixed(order.finalAmount))
+            ) {
                 toast({
                     title: 'Amount Error',
                     description: 'Amount can not be greater than order amount',
-                    variant: 'destructive'
-                })
+                    variant: 'destructive',
+                });
                 return;
             }
             if (data.type === ORDER_TYPES.DELIVERY && !defaultAddress?.id) {
@@ -216,14 +220,14 @@ const PaymentModal = ({ openBtnClassName = 'w-full', id, variant = 'default', or
             await createPayment({
                 variables: {
                     id: id,
-                    amount: parseFloat(`${data.amount}`).toFixed(2),
+                    amount: `${Number(toFixed(data.amount))}`,
                     order: data.order,
                     paymentMethod: data.payment_method,
                     status: data.status,
                     trxId: data.trx_id,
                     remarks: data.remarks,
-                }
-            })
+                },
+            });
 
             if (defaultAddress && order?.user?.id && data.type === ORDER_TYPES.DELIVERY) {
                 await addressUpdate({
@@ -255,7 +259,9 @@ const PaymentModal = ({ openBtnClassName = 'w-full', id, variant = 'default', or
             setDefaultAddress({ ...add, user: orderRes?.order?.user?.id, default: true })
         }
 
-    }
+    }   
+    console.log({isModelOpen});
+    
 
     // if (loading) return <Loading />;
 
@@ -263,17 +269,20 @@ const PaymentModal = ({ openBtnClassName = 'w-full', id, variant = 'default', or
         <Modal
             openBtnClassName={openBtnClassName}
             openBtnName={openBtnName}
-            title='Payment'
-            className='max-w-xl'
+            title="Payment"
+            className="max-w-xl"
             disabled={paymentLoading || disabled || loading}
             variant={variant}
             isCloseBtn={false}
-            open={(isModelOpen && !disabled)}
             onOpenChange={setIsModalOpen}
+            open={ isModelOpen  && !disabled }
             onOpen={onPaymentRequest}
         >
-            <Form  {...paymentForm}>
-                <form onSubmit={paymentForm.handleSubmit(handlePayment)} className="space-y-6 p-4">
+            <Form {...paymentForm}>
+                <form
+                    onSubmit={paymentForm.handleSubmit(handlePayment)}
+                    className="space-y-6 p-4"
+                >
                     {/* Order Information */}
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-8 ">
                         <div className="">
@@ -284,9 +293,11 @@ const PaymentModal = ({ openBtnClassName = 'w-full', id, variant = 'default', or
                                 // type='number'
                                 placeholder="Enter amount"
                                 className="w-full h-11"
-                                itemClassName='w-full'
+                                itemClassName="w-full"
                                 rest={{
-                                    max: parseInt(orderRes?.order?.due) ? toFixed(orderRes?.order?.due) : toFixed(orderRes?.order?.finalAmount)
+                                    max: parseInt(orderRes?.order?.due)
+                                        ? toFixed(orderRes?.order?.due)
+                                        : toFixed(orderRes?.order?.finalAmount),
                                 }}
                             />
                         </div>
@@ -295,7 +306,12 @@ const PaymentModal = ({ openBtnClassName = 'w-full', id, variant = 'default', or
                                 form={paymentForm}
                                 name="status"
                                 label="Status"
-                                options={PAYMENT_STATUSES_LIST.map((status) => ({ label: status, value: status }))}
+                                options={PAYMENT_STATUSES_LIST.map(
+                                    (status) => ({
+                                        label: status,
+                                        value: status,
+                                    })
+                                )}
                                 placeholder="Select Status"
                             />
                         </div>
@@ -304,7 +320,10 @@ const PaymentModal = ({ openBtnClassName = 'w-full', id, variant = 'default', or
                                 form={paymentForm}
                                 name="payment_method"
                                 label="Payment Method"
-                                options={PAYMENT_METHODS_TYPE.map((item) => ({ label: item, value: item, }))}
+                                options={PAYMENT_METHODS_TYPE.map((item) => ({
+                                    label: item,
+                                    value: item,
+                                }))}
                                 placeholder="Select payment "
                             />
                         </div>
@@ -317,7 +336,9 @@ const PaymentModal = ({ openBtnClassName = 'w-full', id, variant = 'default', or
                                 options={ORDER_TYPE.map((item) => ({
                                     label: underscoreToSpace(item),
                                     value: item,
-                                    disabled: !orderRes?.order.user && item === ORDER_TYPES.DELIVERY
+                                    disabled:
+                                        !orderRes?.order.user &&
+                                        item === ORDER_TYPES.DELIVERY,
                                 }))}
                                 placeholder="Select order type "
                             />
@@ -329,56 +350,76 @@ const PaymentModal = ({ openBtnClassName = 'w-full', id, variant = 'default', or
                                 label="Remark"
                                 placeholder="Remark"
                                 className="w-full h-11"
-                                itemClassName='w-full'
+                                itemClassName="w-full"
                             />
                         </div>
                     </div>
-                    {
-                        paymentForm.watch('type') === ORDER_TYPES.DELIVERY ?
-                            !address1 && !address2 ? <div className=' flex gap-3 mb-5'>
+                    {paymentForm.watch('type') === ORDER_TYPES.DELIVERY ? (
+                        !address1 && !address2 ? (
+                            <div className=" flex gap-3 mb-5">
                                 <Address
-                                    onSelect={() => handleSelectAddress(address1)}
+                                    onSelect={() =>
+                                        handleSelectAddress(address1)
+                                    }
                                     user={orderRes?.order?.user}
                                     address={{
                                         ...address1,
-                                        addressType: "HOME",
-                                        default: address1?.id && address1?.id === defaultAddress?.id
+                                        addressType: 'HOME',
+                                        default:
+                                            address1?.id &&
+                                            address1?.id === defaultAddress?.id,
                                     }}
                                 />
                                 <Address
-                                    onSelect={() => handleSelectAddress(address2)}
+                                    onSelect={() =>
+                                        handleSelectAddress(address2)
+                                    }
                                     address={{
                                         ...address2,
-                                        addressType: "OFFICE",
-                                        default: address2?.id && address2?.id === defaultAddress?.id
+                                        addressType: 'OFFICE',
+                                        default:
+                                            address2?.id &&
+                                            address2?.id === defaultAddress?.id,
                                     }}
                                     user={orderRes?.order?.user}
                                 />
-                            </div> :
-                                <div className=' flex gap-3 mb-5'>
-                                    <Address
-                                        onSelect={() => handleSelectAddress(address1)}
-                                        user={orderRes?.order?.user}
-                                        address={{
-                                            ...address1,
-                                            default: address1?.id && address1?.id === defaultAddress?.id
-                                        }}
-                                    />
-                                    <Address
-                                        onSelect={() => handleSelectAddress(address2)}
-                                        address={{
-                                            ...address2,
-                                            default: address2?.id && address2?.id === defaultAddress?.id
-                                        }}
-                                        user={orderRes?.order?.user}
-                                    />
-                                </div> : ""
-                    }
+                            </div>
+                        ) : (
+                            <div className=" flex gap-3 mb-5">
+                                <Address
+                                    onSelect={() =>
+                                        handleSelectAddress(address1)
+                                    }
+                                    user={orderRes?.order?.user}
+                                    address={{
+                                        ...address1,
+                                        default:
+                                            address1?.id &&
+                                            address1?.id === defaultAddress?.id,
+                                    }}
+                                />
+                                <Address
+                                    onSelect={() =>
+                                        handleSelectAddress(address2)
+                                    }
+                                    address={{
+                                        ...address2,
+                                        default:
+                                            address2?.id &&
+                                            address2?.id === defaultAddress?.id,
+                                    }}
+                                    user={orderRes?.order?.user}
+                                />
+                            </div>
+                        )
+                    ) : (
+                        ''
+                    )}
 
-                    <Button isLoading={paymentLoading || loading || create_loading}>
-                        {
-                            id ? "Payment Update" : "Payment"
-                        }
+                    <Button
+                        isLoading={paymentLoading || loading || create_loading}
+                    >
+                        {id ? 'Payment Update' : 'Payment'}
                     </Button>
                 </form>
             </Form>

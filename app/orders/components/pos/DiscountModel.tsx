@@ -21,7 +21,7 @@ const DiscountModel = () => {
     const cart = useStore((store) => store.cart)
     const addCarts = useStore((store) => store.addCarts)
     const [discountCart, setDiscountCart] = useState<CARD_TYPE[]>(cart);
-
+    const [isModelOpen, setIsModalOpen] = useState(false);
     const handleDiscount = (id: string, discount: number) => {
         //  negative discount can't be allowed
         if (discount < 0) return;
@@ -47,48 +47,69 @@ const DiscountModel = () => {
     }, [cart]);
 
     return (
-        <div className=' flex flex-col items-end'>
+        <div className=" flex flex-col items-end">
             <Modal
                 onClose={handleConfirm}
-                openBtnClassName='w-[155px]'
-                openBtnName='Discount'
-                title='Discount '
-                className='max-w-2xl'
+                openBtnClassName="w-[155px]"
+                openBtnName="Discount"
+                title="Discount "
+                className="max-w-2xl"
                 disabled={!cart?.length}
                 isCloseBtn={true}
-                closeBtnName='Continue'
+                onOpenChange={setIsModalOpen}
+                open={isModelOpen}
+                closeBtnName="Continue"
             >
-
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="text-[13px] font-medium uppercase tracking-wider">Name</TableHead>
-                            <TableHead className="text-[13px] font-medium uppercase tracking-wider">Quantity</TableHead>
-                            <TableHead className="text-[13px] font-medium uppercase tracking-wider">Price</TableHead>
-                            <TableHead className="text-[13px] font-medium uppercase tracking-wider">Discount</TableHead>
+                            <TableHead className="text-[13px] font-medium uppercase tracking-wider">
+                                Name
+                            </TableHead>
+                            <TableHead className="text-[13px] font-medium uppercase tracking-wider">
+                                Quantity
+                            </TableHead>
+                            <TableHead className="text-[13px] font-medium uppercase tracking-wider">
+                                Price
+                            </TableHead>
+                            <TableHead className="text-[13px] font-medium uppercase tracking-wider">
+                                Discount
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {discountCart?.map((node) => (
                             <TableRow key={node.id}>
-                                <TableCell className="py-4">{node?.name}</TableCell>
-                                <TableCell className="py-4">{node?.quantity}</TableCell>
-                                <TableCell className="py-4">${node?.price?.toFixed(2)}</TableCell>
+                                <TableCell className="py-4">
+                                    {node?.name}
+                                </TableCell>
+                                <TableCell className="py-4">
+                                    {node?.quantity}
+                                </TableCell>
+                                <TableCell className="py-4">
+                                    ${node?.price?.toFixed(2)}
+                                </TableCell>
                                 <TableCell className="py-4 font-medium">
                                     <Input
-                                        onChange={(e) => handleDiscount(node.id, parseFloat(e.target.value) || 0)}
-                                        value={toFixed(node.totalDiscount) || ""}
-                                        placeholder='Discount amount'
+                                        onChange={(e) =>
+                                            handleDiscount(
+                                                node.id,
+                                                parseFloat(e.target.value) || 0
+                                            )
+                                        }
+                                        value={
+                                            toFixed(node.totalDiscount) || ''
+                                        }
+                                        placeholder="Discount amount"
                                         step={0.01}
-                                        min={0.00}
-                                        type='number'
+                                        min={0.0}
+                                        type="number"
                                     />
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
-
             </Modal>
         </div>
     );

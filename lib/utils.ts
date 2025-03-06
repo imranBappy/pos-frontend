@@ -83,14 +83,14 @@ export const getErrors = (errors: Error[]): getErrorsType => {
   return newErrors;
 }
 
-export const toFixed = (value: number | string) => {
-  try {
-    if (typeof value === 'string') value = parseFloat(value)
-    return parseFloat(value.toFixed(2))
-  } catch {
-    return value
-  }
-}
+export const toFixed = (value: number | string, decimalPlaces=2) => {
+    try {
+        if (typeof value === 'string') value = parseFloat(value);
+        return parseFloat(value.toFixed(decimalPlaces));
+    } catch {
+        return value;
+    }
+};
 
 export const underscoreToSpace = (value: string) => {
   return value.replace(/_/g, ' ')

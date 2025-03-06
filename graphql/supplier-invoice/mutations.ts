@@ -46,28 +46,28 @@ export const SUPPLIER_INVOICE_MUTATION = gql`
 `;
 
 export const SUPPLIER_INVOICE_ITEM_MUTATION = gql`
-  mutation MyMutation(
-    $id: String
-    $item: ID!
-    $price: Decimal!
-    $quantity: Int!
-    $supplierInvoice: ID!
-    $vat: Decimal!
-  ) {
-    parchageInvoiceItemCud(
-      input: {
-        item: $item
-        quantity: $quantity
-        price: $price
-        id: $id
-        supplierInvoice: $supplierInvoice
-        vat: $vat
-      }
+    mutation MyMutation(
+        $id: String
+        $item: ID!
+        $price: Decimal!
+        $quantity: Decimal!
+        $supplierInvoice: ID!
+        $vat: Decimal!
     ) {
-      message
-      success
+        purchaseInvoiceItemCud(
+            input: {
+                item: $item
+                quantity: $quantity
+                price: $price
+                id: $id
+                supplierInvoice: $supplierInvoice
+                vat: $vat
+            }
+        ) {
+            message
+            success
+        }
     }
-  }
 `;
 
 export const SUPPLIER_INVOICE_ITEM_DELETE_MUTATION = gql`mutation MyMutation($id: ID!) {

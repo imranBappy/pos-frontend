@@ -221,81 +221,97 @@ query MyQuery($first: Int, $orderBy: String, $offset: Int, $search: String, $typ
 }
 `
 export const ORDER_QUERY = gql`
-query MyQuery($id: ID!) {
-  order(id: $id) {
-    user {
-      id
-      name
-      email
-
-      address{
-        edges{
-          node{
-            id
-            address
-            default
-            addressType
-            city
-            area
-            street
-            house
-            street
-          }
-        }
-      }
-    }
-  
-    payments {
-      totalCount
-      edges {
-        node {
-            amount
-            createdAt
-            id
-            paymentMethod
-            remarks
+    query MyQuery($id: ID!) {
+        order(id: $id) {
             status
-            trxId
-        }
-      }
-    }
-    status
-    finalAmount
-    due
-    amount
-    type
-    id
-    orderId
-    createdAt
-    outlet {
-      email
-      id
-      address
-      name
-      phone
-     
-    }
-    items {
-      totalCount
-      edges {
-        node {
-          price
-          quantity
-          id
-          discount
-          vat
-          product {
+            finalAmount
+            due
+            amount
+            type
             id
-            images
-            name
-            vat
-          }
+            orderId
+
+            tableBookings {
+                totalCount
+                edges {
+                    node {
+                        id
+                        floorTable {
+                            id
+                            name
+                            createdAt
+                            isActive
+                            isBooked
+                        }
+                    }
+                }
+            }
+
+            createdAt
+            user {
+                id
+                name
+                email
+
+                address {
+                    edges {
+                        node {
+                            id
+                            address
+                            default
+                            addressType
+                            city
+                            area
+                            street
+                            house
+                            street
+                        }
+                    }
+                }
+            }
+
+            payments {
+                totalCount
+                edges {
+                    node {
+                        amount
+                        createdAt
+                        id
+                        paymentMethod
+                        remarks
+                        status
+                        trxId
+                    }
+                }
+            }
+            outlet {
+                email
+                id
+                address
+                name
+                phone
+            }
+            items {
+                totalCount
+                edges {
+                    node {
+                        price
+                        quantity
+                        id
+                        discount
+                        vat
+                        product {
+                            id
+                            images
+                            name
+                            vat
+                        }
+                    }
+                }
+            }
         }
-      }
     }
-  }
-}
-`
+`;
 
 export const FLOORS_QUERY = gql`
 query MyQuery($after: String, $first: Int, $offset: Int, $name: String, $search: String, $isActive: Boolean, $orderBy: String ) {

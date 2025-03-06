@@ -98,7 +98,7 @@ export function SupplierInvoiceForm({ invoiceId }: { invoiceId?: string }) {
       variables: { supplierInvoice: invoiceId },
       onCompleted: (res) => {
         const newItems: ITEMS_TYPE = new Map();
-        const supplierInvoiceItems = res?.parchageInvoiceItems.edges;
+        const supplierInvoiceItems = res?.purchaseInvoiceItems.edges;
         supplierInvoiceItems.forEach(
           ({ node }: { node: SUPPLIER_INVOICE_ITEM_TYPE }) => {
             newItems.set(node.item.id, {
@@ -205,7 +205,7 @@ export function SupplierInvoiceForm({ invoiceId }: { invoiceId?: string }) {
         toast({ description: "Add Minimum 1 item", variant: "destructive" });
         return;
       }
-      // validation parchage items
+      // validation purchase items
       for (const [, value] of selectedItems) {
         if (value.quantity < 1) {
           toast({
@@ -243,7 +243,7 @@ export function SupplierInvoiceForm({ invoiceId }: { invoiceId?: string }) {
 
             const preCurrentStock = itemRes?.data?.item?.currentStock;
             const preQuantity =
-              invoiceItemRes.data.parchageInvoiceItem.quantity;
+              invoiceItemRes.data.purchaseInvoiceItem.quantity;
 
             const newCurrentStock =
               preCurrentStock - preQuantity + value.quantity;
@@ -308,7 +308,7 @@ export function SupplierInvoiceForm({ invoiceId }: { invoiceId?: string }) {
       // the delete existing invoice item
       if (invoiceId) {
         const invoiceItemsDelete: string[] = [];
-        invoiceItemsRes?.parchageInvoiceItems?.edges?.forEach(
+        invoiceItemsRes?.purchaseInvoiceItems?.edges?.forEach(
           ({ node }: { node: SUPPLIER_INVOICE_ITEM_TYPE }) => {
             if (!selectedItems.get(`${node.item.id}`)) {
               invoiceItemsDelete.push(node.id);

@@ -24,7 +24,7 @@ const navbarLinks: NavLinks = {
     [ADMIN]: [
         {
             title: 'Dashboard',
-            url: '/',
+            url: '/dashboard',
             icon: SquareTerminal,
             isActive: true,
         },

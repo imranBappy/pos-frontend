@@ -23,7 +23,7 @@ const OrderCartItem = ({id}: PROPS_TYPE) => {
         </Link>
         <p className="text-sm   dark:text-gray-300 text-gray-500 w-52 flex  ">
           <Input
-            className="px-2 text-center  !py-0 h-5 border-none rounded-none w-12"
+            className="px-2 text-center  !py-0 h-5 border-none rounded-none w-14"
             id={`quantity-${id}`}
             onChange={(e) => {
               addItem(
@@ -46,7 +46,7 @@ const OrderCartItem = ({id}: PROPS_TYPE) => {
             <X size={16} /> <span className=" ml-3 text-sm">$</span>{" "}
           </span>
           <Input
-            className="p-0 !py-0 h-5 border-none rounded-none w-20"
+            className="p-0 !py-0 h-5 border-none rounded-none w-22"
             size={1}
             onChange={(e) =>
               addItem(

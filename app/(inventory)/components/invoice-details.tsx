@@ -22,16 +22,17 @@ import { ORDER_STATUSES } from '@/constants/order.constants';
 
 interface ProductNode {
     node: {
-        item:{
+        item: {
             name: string;
             image: string;
-        }
+        };
         id: string;
         product: {
             name: string;
             images: string;
             price: number;
         };
+        totalQuantity:number;
         quantity: number;
         price: number;
         discount: number;
@@ -50,6 +51,7 @@ export const InvoiceDetails = ({ invoiceId }: { invoiceId: string }) => {
     const supplierInvoice = data.supplierInvoice;
     const supplier = supplierInvoice?.supplier;
     const payments = supplierInvoice?.payments.edges;
+    const invoiceImage  = supplierInvoice?.invoiceImage;
 
 
     return (
@@ -289,6 +291,9 @@ export const InvoiceDetails = ({ invoiceId }: { invoiceId: string }) => {
                                     Quantity
                                 </TableHead>
                                 <TableHead className="text-[13px] font-medium uppercase tracking-wider">
+                                    Current Quantity
+                                </TableHead>
+                                <TableHead className="text-[13px] font-medium uppercase tracking-wider">
                                     Price
                                 </TableHead>
                                 <TableHead className="text-[13px] font-medium uppercase tracking-wider">
@@ -297,7 +302,7 @@ export const InvoiceDetails = ({ invoiceId }: { invoiceId: string }) => {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {supplierInvoice?.parchageItems?.edges?.map(
+                            {supplierInvoice?.purchaseItems?.edges?.map(
                                 ({ node }: ProductNode) => (
                                     <TableRow key={node.id}>
                                         <TableCell className="py-4">
@@ -315,13 +320,16 @@ export const InvoiceDetails = ({ invoiceId }: { invoiceId: string }) => {
                                             </div>
                                         </TableCell>
                                         <TableCell className="py-4">
-                                            {node?.quantity}
+                                            {toFixed(node?.totalQuantity)}
+                                        </TableCell>
+                                        <TableCell className="py-4">
+                                            {toFixed(node?.quantity)}
                                         </TableCell>
                                         <TableCell className="py-4">
                                             ${toFixed(node?.price)}
                                         </TableCell>
                                         <TableCell className="py-4">
-                                            ${node?.vat || 0}
+                                            ${toFixed(node?.vat) || 0}
                                         </TableCell>
                                     </TableRow>
                                 )
@@ -330,6 +338,26 @@ export const InvoiceDetails = ({ invoiceId }: { invoiceId: string }) => {
                     </Table>
                 </CardContent>
             </Card>
+
+            {/* Invoice Image */}
+            {invoiceImage && (
+                <Card className="shadow-sm">
+                    <CardHeader className="border-b">
+                        <CardTitle className="text-lg tracking-tight">
+                            Invoice Image
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-6 flex justify-center ">
+                        <Image
+                            src={invoiceImage}
+                            alt="invoice"
+                            width={800}
+                            height={800}
+                            className="rounded-md object-cover  "
+                        />
+                    </CardContent>
+                </Card>
+            )}
         </div>
     );
 };

@@ -87,10 +87,10 @@ export function IngredientForm({ productId }: { productId?: string }) {
                 toast({ description: "Add Minimum 1 item", variant: 'destructive' })
                 return
             }
-            // validation parchage items
+            // validation purchase items
             for (const [, value] of selectedItems) {
-                if (value.quantity < 1) {
-                    toast({ description: "Quantity can not be less 1", variant: 'destructive' })
+                if (value.quantity < 0) {
+                    toast({ description: "Quantity have to be more then 0", variant: 'destructive' })
                     return
                 }
                 // if (value.price < 1) {
@@ -104,9 +104,9 @@ export function IngredientForm({ productId }: { productId?: string }) {
                 const itemVariable = {
                     id: value.id ? value.id : undefined,
                     item: id,
-                    quantity: value.quantity,
-                    product: productId
-                }
+                    quantity: `${value.quantity}`,
+                    product: productId,
+                };
                 await ingredientMutation({ variables: itemVariable })
             }
 
@@ -133,7 +133,7 @@ export function IngredientForm({ productId }: { productId?: string }) {
             clearItems()
 
             if (productId) {
-                router.push('/supplier-invoices')
+                router.push('/product')
             }
         } catch (error) {
             toast({

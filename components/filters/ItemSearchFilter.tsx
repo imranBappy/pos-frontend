@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { X } from "lucide-react"
 import { OPTION_TYPE } from "../input"
 import { ITEMS_TYPE } from "@/stores/slices"
+import { toFixed } from "@/lib/utils"
 
 function SearchIcon() {
     return (
@@ -62,6 +63,16 @@ const SearchFilter = ({ placeholder = "Search...", isForProduct, onSelect, onRem
         debounce((value: unknown) => setSearch(value as string), 300),
         [],
     )
+
+    const handleQuantity = (value: string, item: OPTION_TYPE) => {
+        
+        onSelect(
+            item.value,
+            parseFloat(value),
+            selectedItems.get(item.value)?.price || 1,
+            selectedItems.get(item.value)?.id
+        );
+    };
 
     return (
       <div className=" !w-full border  rounded">
@@ -156,18 +167,11 @@ const SearchFilter = ({ placeholder = "Search...", isForProduct, onSelect, onRem
                         </label>
                         <Input
                           id={`quantity-${item.value}`}
-                          onChange={(e) =>
-                            onSelect(
-                              item.value,
-                              Number(e.target.value),
-                              selectedItems.get(item.value)?.price || 1,
-                              selectedItems.get(item.value)?.id
-                            )
-                          }
-                          value={selectedItems.get(item.value)?.quantity || ""}
+                          onChange={(e) => handleQuantity(e.target.value, item)  }
+                          value={toFixed(selectedItems.get(item.value)?.quantity || 0, 5) }
                           disabled={selectedItems.get(item.value) === undefined}
                           type="number"
-                          min={1}
+                          min={0}
                           placeholder="Quantity"
                           name="quantity"
                           className="w-24 h-7"

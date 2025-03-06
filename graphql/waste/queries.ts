@@ -40,22 +40,72 @@ export const WASTES_QUERY = gql`
     }
 `;
 export const WASTE_QUERY = gql`
-query MyQuery($id: ID!) {
-  waste(id: $id) {
-    createdAt
-    date
-    id
-    note
-    totalLossAmount
-    responsible {
-      id
-      name
+    query MyQuery($id: ID!) {
+        waste(id: $id) {
+            category {
+                id
+                name
+            }
+            createdAt
+            date
+            estimatedCost
+            id
+            notes
+            responsible {
+                role {
+                    name
+                    id
+                }
+                photo
+                phone
+                name
+                isActive
+                isVerified
+                gender
+                id
+                email
+            }
+            invoice {
+                finalAmount
+                duePaymentDate
+                due
+                createdAt
+                amount
+                poNumber
+                status
+                paidAmount
+                invoiceNumber
+                invoiceImage
+                id
+                supplier {
+                    name
+                    id
+                    phoneNumber
+                    contactPerson
+                    emailAddress
+                    branch
+                    address
+                }
+            }
+            wasteIngredient {
+                totalCount
+                edges {
+                    node {
+                        createdAt
+                        id
+                        lossAmount
+                        quantity
+                        updatedAt
+                        ingredient {
+                            id
+                            image
+                            name
+                        }
+                    }
+                }
+            }
+        }
     }
-    wasteIngredient {
-      totalCount
-    }
-  }
-}
 `;
 
 export const WASTE_CATEGORIES_QUERY = gql`

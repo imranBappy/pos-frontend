@@ -65,7 +65,24 @@ mutation MyMutation($status: String!, $type: String!, $user: ID,$id: String, $is
   }
 }
 `;
-
+export const ORDER_MUTATION_V2 = gql`
+    mutation MyMutation2($input: OrderInputType!) {
+        orderCuv2(input: $input) {
+            message
+            success
+            order {
+                id
+                orderId
+                finalAmount
+                amount
+                duePaymentDate
+                due
+                status
+                type
+            }
+        }
+    }
+`;
 export const ORDER_PRODUCT_MUTATION = gql`
 mutation MyMutation($price: Decimal!, $product: ID, $quantity: Int!, $order: ID!, $id: String, $discount: Decimal = 0, $vat: Decimal!) {
   orderProductCud(
@@ -168,7 +185,7 @@ mutation MyMutation($orderProducts: [OrderProductInput!]!) {
 }
 `
 export const INGREDIENT_MUTATION = gql`
-mutation MyMutation($id: String, $item: ID! , $product: ID!, $quantity: Int!) {
+mutation MyMutation($id: String, $item: ID! , $product: ID!, $quantity: Decimal!) {
   ingredientCud(
     input: {product: $product, quantity: $quantity, id: $id, item: $item}
   ) {
@@ -176,7 +193,7 @@ mutation MyMutation($id: String, $item: ID! , $product: ID!, $quantity: Int!) {
     success
   }
 }
-`
+`;
 export const DELETE_INGREDIENT = gql`
 mutation MyMutation($id: ID!) {
   deleteIngredient(id: $id) {

@@ -15,7 +15,7 @@ export const SUPPLIER_INVOICE_QUERY = gql`
             invoiceImage
             invoiceNumber
             paidAmount
-            parchageItems(first: $first) {
+            purchaseItems(first: $first) {
                 totalCount
                 edges {
                     node {
@@ -23,6 +23,7 @@ export const SUPPLIER_INVOICE_QUERY = gql`
                         id
                         price
                         quantity
+                        totalQuantity
                         item {
                             id
                             image
@@ -65,33 +66,45 @@ export const SUPPLIER_INVOICE_QUERY = gql`
 `;
 
 export const SUPPLIER_INVOICES_QUERY = gql`
- query SupplierInvoicesQuery($offset: Int, $first: Int, $search: String) {
-  supplierInvoices(offset: $offset, first: $first, search: $search) {
-    edges {
-      node {
-        id
-        due
-        duePaymentDate
-        invoiceNumber
-        amount
-        status
-        supplier {
-          id
-          name
+    query SupplierInvoicesQuery(
+        $offset: Int
+        $first: Int
+        $search: String
+        $minStock: Decimal
+        $itemId: Decimal
+    ) {
+        supplierInvoices(
+            offset: $offset
+            first: $first
+            search: $search
+            minStock: $minStock
+            itemId: $itemId
+        ) {
+            edges {
+                node {
+                    id
+                    due
+                    duePaymentDate
+                    invoiceNumber
+                    amount
+                    status
+                    supplier {
+                        id
+                        name
+                    }
+                    createdAt
+                    updatedAt
+                    paidAmount
+                }
+            }
+
+            totalCount
         }
-        createdAt
-        updatedAt
-        paidAmount
-      }
     }
-    
-    totalCount
-  }
-}
 `;
 export const SUPPLIER_INVOICE_ITEMS_QUERY = gql`
 query MyQuery($supplierInvoice: String) {
-  parchageInvoiceItems(supplierInvoice: $supplierInvoice) {
+  purchaseInvoiceItems(supplierInvoice: $supplierInvoice) {
     totalCount
     edges {
       node {
@@ -118,7 +131,7 @@ query MyQuery($supplierInvoice: String) {
 
 export const SUPPLIER_INVOICE_ITEM_QUERY = gql`
 query MyQuery($id: ID!) {
-  parchageInvoiceItem(id: $id) {
+  purchaseInvoiceItem(id: $id) {
     createdAt
     id
     price

@@ -22,10 +22,13 @@ export interface PRODUCT_TYPE {
     kitchen?: RELATED_TYPE | string;
     category?: RELATED_TYPE | string;
     subcategory?: RELATED_TYPE | string;
-    images?: string | Promise<string>,
+    images?: string | Promise<string>;
     ingredients?: {
-        totalCount: number
-    }
+        totalCount: number;
+    };
+    orders?: {
+        totalCount: number;
+    };
 }
 export interface CATEGORY_TYPE {
     id: string;
@@ -84,10 +87,11 @@ export interface ORDER_TYPE {
 export interface FLOOR_TABLES_TYPE {
     name: string;
     id: string;
-    createdAt: string,
-    isActive: boolean,
-    isBooked: boolean,
+    createdAt: string;
+    isActive: boolean;
+    isBooked: boolean;
     floor?: FLOOR_TYPE;
+    floorTable?: FLOOR_TYPE;
 }
 export interface FLOOR_TYPE {
     name: string;

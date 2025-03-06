@@ -137,3 +137,18 @@ export const CUSTOMER_SEARCH_QUERY = gql`
         }
     }
 `;
+
+export const EMPLOYEE_SEARCH_QUERY = gql`
+    query MyQuery($search: String, $first: Int) {
+        users(search: $search, first: $first, isEmployee: true) {
+            totalCount
+            edges {
+                node {
+                    id
+                    email
+                    name
+                }
+            }
+        }
+    }
+`;

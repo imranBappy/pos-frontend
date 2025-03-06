@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import MainLayout from "@/layout/MainLayout";
-import { CounterStoreProvider } from "@/providers/table-store-provider";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -23,9 +22,7 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}  >
-        <CounterStoreProvider>
           <MainLayout>{children}</MainLayout>
-        </CounterStoreProvider>
       </body>
     </html>
   );

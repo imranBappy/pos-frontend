@@ -21,6 +21,13 @@ const Items = ({ filters }: POSCategoriesProps) => {
   const addItem = useStore((store) => store.addItem);
 
   const handleAddToCart = (item: ITEM_TYPE) => {
+    if (!selectedItems.get(item.id) && selectedItems.size) {
+        toast({
+            description: 'You can maximum one item.',
+            variant:"destructive"
+        });
+      return
+    }
     const quantity = selectedItems.get(item.id)?.quantity || 0;
     const vat = selectedItems.get(item.id)?.vat || 0;
     addItem(
