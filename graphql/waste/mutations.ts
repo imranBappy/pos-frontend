@@ -29,3 +29,11 @@ export const WASTE_CATEGORIES_MUTATION = gql`
         }
     }
 `;
+
+export const DELETE_WASTE = gql`
+    mutation MyMutation($id: ID!) {
+        deleteWaste(id: $id) {
+            success
+        }
+    }
+`;

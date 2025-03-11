@@ -56,34 +56,126 @@ query PRODUCTS_QUERY($offset: Int, $search: String, $after: String, $before: Str
 }
 `;
 export const PRODUCT_QUERY = gql`
-query PRODUCT_QUERY($id: ID!) {
+query Product($id: ID!) {
   product(id: $id) {
     id
     name
-    price
-    description
     vat
-    images
-    sku
-    cookingTime
     tag
+    sku
+    price
     isActive
+    images
+    cookingTime
     createdAt
+    description
     video
     category {
+      description
       id
+      image
+      isActive
       name
+    }
+    subcategory {
+      name
+      image
+      id
+      description
     }
     kitchen {
       id
       name
     }
-    subcategory {
-      id
-      name
+    orders(first: 60) {
+      totalCount
+      edges {
+        node {
+          order {
+            id
+            orderId
+            status
+          }
+          price
+          vat
+          quantity
+          id
+          discount
+          createdAt
+        }
+      }
     }
+    
   }
 }
+`;
+export const PRODUCT_DETAILS_QUERY = gql`
+    query Product($id: ID!) {
+        product(id: $id) {
+            id
+            name
+            vat
+            tag
+            sku
+            price
+            isActive
+            images
+            cookingTime
+            createdAt
+            description
+            video
+            ingredients {
+                totalCount
+                edges {
+                    node {
+                        id
+                        price
+                        quantity
+                        item {
+                            id
+                            image
+                            name
+                        }
+                    }
+                }
+            }
+            category {
+                description
+                id
+                image
+                isActive
+                name
+            }
+            subcategory {
+                name
+                image
+                id
+                description
+            }
+            kitchen {
+                id
+                name
+            }
+            orders(first: 60) {
+                totalCount
+                edges {
+                    node {
+                        order {
+                            id
+                            orderId
+                            status
+                        }
+                        price
+                        vat
+                        quantity
+                        id
+                        discount
+                        createdAt
+                    }
+                }
+            }
+        }
+    }
 `;
 
 export const CATEGORIES_QUERY = gql`
@@ -149,77 +241,87 @@ export const SUBCATEGORIES_QUERY = gql`
 `
 
 export const ORDERS_QUERY = gql`
-query MyQuery($first: Int, $orderBy: String, $offset: Int, $search: String, $type: ProductOrderTypeChoices, $status: ProductOrderStatusChoices, $outlet: ID) {
-  orders(
-    first: $first
-    orderBy: $orderBy
-    offset: $offset
-    search: $search
-    type: $type
-    status: $status
-    outlet: $outlet
-  ) {
-    totalCount
-    edges {
-      node {
-        id
-        createdAt
-        status
-        finalAmount
-        type
-        orderId
-        due
-        amount
-        user {
-          id
-          name
-          email
-        }
-        outlet {
-          email
-          id
-          address
-          name
-          phone
-          
-        }
-        payments {
-          totalCount
-          edges {
-            node {
-                amount
-                createdAt
-                id
-                paymentMethod
-                remarks
-                status
-                trxId
-            }
-          }
-        }
-        items {
-          totalCount
-          edges {
-            node {
-               	price
-                quantity
-                id
-                discount
-                vat
-                product {
-                  id
-                  images
-                  name
-                  vat
+    query MyQuery(
+        $first: Int
+        $orderBy: String
+        $offset: Int
+        $search: String
+        $type: ProductOrderTypeChoices
+        $status: ProductOrderStatusChoices
+        $outlet: ID
+    ) {
+        orders(
+            first: $first
+            orderBy: $orderBy
+            offset: $offset
+            search: $search
+            type: $type
+            status: $status
+            outlet: $outlet
+        ) {
+            totalCount
+            edges {
+                node {
+                    id
+                    createdAt
+                    status
+                    finalAmount
+                    type
+                    orderId
+                    due
+                    amount
+                    user {
+                        id
+                        name
+                        email
+                    }
+                    outlet {
+                        email
+                        id
+                        address
+                        name
+                        phone
+                    }
+                    payments {
+                        totalCount
+                        edges {
+                            node {
+                                amount
+                                createdAt
+                                id
+                                paymentMethod
+                                remarks
+                                status
+                                trxId
+                            }
+                        }
+                    }
+                    items {
+                        totalCount
+                        edges {
+                            node {
+                                price
+                                quantity
+                                id
+                                discount
+                                vat
+                                
+                                product {
+                                    id
+                                    images
+                                    price
+                                    name
+                                    vat
+                                    sku
+                                }
+                            }
+                        }
+                    }
                 }
             }
-          }
         }
-      }
     }
-  }
-}
-`
+`;
 export const ORDER_QUERY = gql`
     query MyQuery($id: ID!) {
         order(id: $id) {
@@ -300,6 +402,23 @@ export const ORDER_QUERY = gql`
                         id
                         discount
                         vat
+                        orderIngredients {
+                            totalCount
+                            edges {
+                                node {
+                                    quantity
+                                    id
+                                    item {
+                                        id
+                                        name
+                                        unit {
+                                            id
+                                            name
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         product {
                             id
                             images

@@ -37,6 +37,38 @@ mutation MyMutation($email: String!, $name: String!, $password: String!, $phone:
   }
 }
 `
+export const STAFF_REGISTER = gql`
+    mutation MyMutation(
+        $email: String!
+        $name: String!
+        $password: String!
+        $role: ID!
+        $phone: String!
+        $gender: String
+    ) {
+        registerStaff(
+            email: $email
+            name: $name
+            password: $password
+            role: $role
+            phone: $phone
+            gender: $gender
+        ) {
+            id
+            message
+            success
+        }
+    }
+`;
+
+export const STAFF_REGISTER_V2 = gql`
+    mutation MyMutation($input: RegisterStaffV2Input!) {
+        registerStaffV2(input: $input) {
+            message
+            success
+        }
+    }
+`;
 
 export const PROFILE_MUTATION = gql`
 mutation MyMutation($dateOfBirth: Date, $gender: String, $name: String, $id: String, $phone: String, $photo: String, $role: ID, $isActive: Boolean) {

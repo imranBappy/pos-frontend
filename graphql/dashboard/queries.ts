@@ -73,9 +73,6 @@ export const DASHBOARD_QUERIES = gql`
             }
         }
 
-        wastes {
-            totalCount
-        }
         outlets(first: 10, orderBy: "-createdAt") {
             totalCount
             edges {
@@ -106,7 +103,10 @@ export const DASHBOARD_QUERIES = gql`
                 }
             }
         }
-        categories(first: 10, orderBy: "-createdAt") {
+        wastes {
+            totalCount
+        }
+        categories{
             totalCount
         }
         floorTables {

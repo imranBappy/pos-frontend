@@ -1,6 +1,4 @@
 "use client"
-import withProtection from '@/HOC/ProtectedRoute';
-import { ADMIN } from '@/constants/role.constants';
 import OutletAddForm from '../components/forms/outlet-add-form';
 
 const page = ({ params }: { params: { outletId: string } }) => {
@@ -11,4 +9,4 @@ const page = ({ params }: { params: { outletId: string } }) => {
     );
 };
 
-export default withProtection(page, [ADMIN]);
+export default page;

@@ -1,20 +1,20 @@
-'use client';
-import useAuth from "@/hooks/use-auth";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+// 'use client';
+// import useAuth from "@/hooks/use-auth";
+// import { useRouter } from "next/navigation";
+// import { useEffect } from "react";
 
 
 export default function Home() {
-  const router = useRouter()
-  const checkAuth = useAuth()
+  // const router = useRouter()
+  // const checkAuth = useAuth()
 
-  useEffect(() => {
-    if (checkAuth?.isAuthenticated) {
-      router.push('/orders/pos')
-    } else {
-      router.push('/login')
-    }
-  }, [checkAuth?.isAuthenticated, router])
+  // useEffect(() => {
+  //   if (checkAuth?.isAuthenticated) {
+  //     router.push('/orders/pos')
+  //   } else {
+  //     router.push('/login')
+  //   }
+  // }, [checkAuth?.isAuthenticated, router])
  
   return ( 
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0 bg-background dark:bg-background">

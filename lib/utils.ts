@@ -133,7 +133,7 @@ export const itemStockStatus = (
     safetyStock: number
 ): ITEM_STOCK_STATUS => {
     let status: ITEM_STOCK_STATUS = 'GOOD';
-    if (currentStock === 0)return status = 'DENGER';
+    if (parseFloat(`${currentStock}`) === 0.0) return (status = 'DENGER');
     if (safetyStock >= currentStock) status = 'WARNING';
     return status;
 };

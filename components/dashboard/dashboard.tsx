@@ -22,7 +22,7 @@ import { Badge } from '../ui/badge';
 
 
 export default function Dashboard() {
-
+    
     const { data, loading, error } = useQuery(DASHBOARD_QUERIES);
     const {
         outlets,

@@ -1,7 +1,6 @@
 "use client"
 import { Card } from '@/components/ui/card';
-import { ADMIN } from '@/constants/role.constants';
-import withProtection from '@/HOC/ProtectedRoute';
+
 import React from 'react';
 import { FloorTablesDataTable } from '../components/data-table/floor-table';
 
@@ -13,4 +12,4 @@ const page = () => {
     );
 };
 
-export default withProtection(page, [ADMIN]);
+export default page;

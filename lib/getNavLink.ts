@@ -6,7 +6,6 @@ import {
     Users,
     Store
 } from "lucide-react"
-import authVerify from "./auth"
 
 interface NavItem {
     title: string
@@ -20,7 +19,7 @@ type NavLinks = {
     [key: string]: NavItem[];
 }
 
-const navbarLinks: NavLinks = {
+export const navbarLinks: NavLinks = {
     [ADMIN]: [
         {
             title: 'Dashboard',
@@ -29,13 +28,24 @@ const navbarLinks: NavLinks = {
             isActive: true,
         },
         {
-            title: 'User',
+            title: 'Customer',
             url: '/users',
             icon: Users,
             items: [
                 {
-                    title: 'User List',
+                    title: 'Customers',
                     url: '/users',
+                },
+            ],
+        },
+        {
+            title: 'Staffs',
+            url: '/staffs',
+            icon: Users,
+            items: [
+                {
+                    title: 'Staffs List',
+                    url: '/staffs',
                 },
             ],
         },
@@ -254,10 +264,7 @@ const navbarLinks: NavLinks = {
 
 const getNavLink = (): NavItem[] => {
     try {
-        const auth = authVerify();
-        if ('error' in auth)
-            return [];
-        return navbarLinks[auth.role] || [];
+        return navbarLinks['ADMIN'] || [];
     } catch {
         return [];
     }

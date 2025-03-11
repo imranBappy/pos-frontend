@@ -52,19 +52,17 @@ mutation MyMutation($name: String! , $isActive: Boolean , $image: String , $id: 
 }
 `
 
-export const ORDER_MUTATION = gql`
-mutation MyMutation($status: String!, $type: String!, $user: ID,$id: String, $isCart: Boolean = true, $outlet: ID, $finalAmount: Decimal!, $tableBookings: String, $orderId: String, $amount: Decimal!) {
-  orderCud(
-    input: {type: $type, status: $status, user: $user,  id: $id, isCart: $isCart, outlet: $outlet, finalAmount: $finalAmount, tableBookings: $tableBookings, orderId: $orderId, amount: $amount}
-  ) {
-    message
-    success
-    order {
-      id
+
+
+export const ORDER_CANCEL = gql`
+    mutation MyMutation($orderId: ID!) {
+        orderCancel(orderId: $orderId) {
+            message
+            success
+        }
     }
-  }
-}
 `;
+
 export const ORDER_MUTATION_V2 = gql`
     mutation MyMutation2($input: OrderInputType!) {
         orderCuv2(input: $input) {

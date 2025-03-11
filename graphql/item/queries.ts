@@ -100,3 +100,65 @@ export const ITEM_QUERY = gql`
         }
     }
 `;
+export const ITEM_DETAILS_QUERY = gql`
+    query MyQuery($id: ID!) {
+        item(id: $id) {
+            category {
+                description
+                id
+                image
+                name
+            }
+            createdAt
+            currentStock
+            id
+            image
+            name
+            safetyStock
+            sku
+            stock
+            stockLevel
+            vat
+            unit {
+                description
+                id
+                name
+                createdAt
+            }
+            wasteIngredient {
+                totalCount
+                edges {
+                    node {
+                        quantity
+                        lossAmount
+                        id
+                        createdAt
+                    }
+                }
+            }
+            purchaseItems {
+                totalCount
+                edges {
+                    node {
+                        vat
+                        totalQuantity
+                        quantity
+                        price
+                        id
+                        supplierInvoice {
+                            invoiceNumber
+                            supplier {
+                                name
+                                id
+                                emailAddress
+                            }
+                        }
+                    }
+                }
+            }
+            ingredients {
+                totalCount
+            }
+        }
+    }
+`;

@@ -1,6 +1,4 @@
 "use client"
-import { ADMIN } from '@/constants/role.constants';
-import withProtection from '@/HOC/ProtectedRoute';
 import Outlets from './components/outlets';
 
 const page = () => {
@@ -11,4 +9,4 @@ const page = () => {
     );
 };
 
-export default withProtection(page, [ADMIN]);
+export default page;

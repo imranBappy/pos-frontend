@@ -23,12 +23,16 @@ export interface PRODUCT_TYPE {
     category?: RELATED_TYPE | string;
     subcategory?: RELATED_TYPE | string;
     images?: string | Promise<string>;
+    video?: string;
     ingredients?: {
         totalCount: number;
+        edges: { node: INGREDIENT_QUERY }[];
     };
     orders?: {
         totalCount: number;
+        edges: { node: ORDER_ITEM_TYPE }[];
     };
+    
 }
 export interface CATEGORY_TYPE {
     id: string;
@@ -53,8 +57,13 @@ export interface ORDER_ITEM_TYPE {
     product?: PRODUCT_TYPE;
     quantity: number;
     price: number;
-    discount?: number
-    vat: number
+    discount?: number;
+    vat: number;
+    order:ORDER_TYPE
+    orderIngredients?: {
+        totalCount: number;
+        edges: { node: ORDER_INGREDIENT_TYPE }[];
+    };
 }
 
 
@@ -122,4 +131,11 @@ export interface INGREDIENT_QUERY {
     quantity: number
     item: ITEM_TYPE
     product: PRODUCT_TYPE
+}
+
+export interface ORDER_INGREDIENT_TYPE {
+    id?: string;
+    quantity: number;
+    item: ITEM_TYPE;
+    orderProduct: ORDER_ITEM_TYPE;
 }

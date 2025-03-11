@@ -27,22 +27,18 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import useAuth from "@/hooks/use-auth"
+import { signOut, useSession } from 'next-auth/react';
 
-interface AuthUser {
-    isAuthenticated: boolean;
-    isLoading: boolean;
-    user: {
-        name?: string;
-        email?: string;
-        photo?: string;
-        avatar?: string;
-    } | null;
-    logout: () => void;
-}
 
 const MainSidebarFooter = () => {
-    const auth = useAuth() || { isAuthenticated: false, isLoading: false, user: null, logout: () => {} } as AuthUser;
+   const { data: session, status } = useSession();
+
+    const handleLogout = () =>{
+        signOut();
+        localStorage.clear()
+    }
+
+   if (status === 'loading') return <p></p>;
     
     return (
         <SidebarFooter>
@@ -56,17 +52,19 @@ const MainSidebarFooter = () => {
                             >
                                 <Avatar className="h-8 w-8 rounded-lg">
                                     <AvatarImage
-                                        src={auth.user?.photo}
-                                        alt={auth.user?.name}
+                                        src={session?.user?.image ||""}
+                                        alt={session?.user?.name ?? 'User Avatar'}
                                     />
-                                    <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                                    <AvatarFallback className="rounded-lg">
+                                        CN
+                                    </AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold">
-                                        {auth.user?.name}
+                                        {session?.user?.name}
                                     </span>
                                     <span className="truncate text-xs">
-                                        {auth.user?.email}
+                                        {session?.user?.email}
                                     </span>
                                 </div>
                                 <ChevronsUpDown className="ml-auto size-4" />
@@ -82,8 +80,8 @@ const MainSidebarFooter = () => {
                                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                     <Avatar className="h-8 w-8 rounded-lg">
                                         <AvatarImage
-                                            src={auth.user?.photo}
-                                            alt={auth.user?.name}
+                                            src={session?.user?.image ||""}
+                                            alt={session?.user?.name ||""}
                                         />
                                         <AvatarFallback className="rounded-lg">
                                             CN
@@ -91,10 +89,10 @@ const MainSidebarFooter = () => {
                                     </Avatar>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
                                         <span className="truncate font-semibold">
-                                            {auth.user?.name}
+                                            {session?.user?.name}
                                         </span>
                                         <span className="truncate text-xs">
-                                            {auth.user?.email}
+                                            {session?.user?.email}
                                         </span>
                                     </div>
                                 </div>
@@ -111,8 +109,8 @@ const MainSidebarFooter = () => {
                                 </DropdownMenuItem>
                             </DropdownMenuGroup>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={auth?.logout}>
-                                <LogOut  />
+                            <DropdownMenuItem onClick={handleLogout}>
+                                <LogOut />
                                 Log out
                             </DropdownMenuItem>
                         </DropdownMenuContent>

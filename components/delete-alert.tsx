@@ -52,7 +52,6 @@ function DeleteAlert({
         deleteMutation();
         setOpen(false);
     };
-    console.log({ open });
     
 
     return (

@@ -1,6 +1,4 @@
 "use client"
-import withProtection from "@/HOC/ProtectedRoute"
-import { ADMIN } from "@/constants/role.constants"
 import CategoryForm from "@/app/product/components/forms/category-form"
 
 
@@ -11,4 +9,4 @@ function CardWithForm() {
         </div>
     )
 }
-export default withProtection(CardWithForm, [ADMIN])
+export default CardWithForm;

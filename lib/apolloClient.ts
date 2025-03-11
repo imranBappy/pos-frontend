@@ -1,9 +1,11 @@
 "use client"
-import { JWT_TOKEN_KEY, ROLE_KEY } from '@/constants/auth.constants';
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { ApolloLink } from '@apollo/client';
+import { getSession } from 'next-auth/react';
+import { Session } from 'next-auth';
+import { USER_TYPE } from '@/graphql/accounts';
 
 // HTTP link
 const httpLink = new HttpLink({
@@ -12,8 +14,14 @@ const httpLink = new HttpLink({
 
 
 // Add Authorization header
-const authLink = setContext((_, { headers }) => {
-    const token = localStorage.getItem(JWT_TOKEN_KEY)
+const authLink = setContext( async(_, { headers }) => {
+     type CustomSession = Session & {
+         token?: string;
+         user?: USER_TYPE;
+     };
+     const session = await getSession() as CustomSession | null;
+     const token = session?.token ||"";
+    
     let newHeaders = { ...headers }
     if (token) {
         newHeaders = {
@@ -26,24 +34,29 @@ const authLink = setContext((_, { headers }) => {
     }
 })
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
-
+const errorLink = onError(({ graphQLErrors, networkError,operation, forward }) => {
     if (graphQLErrors) {
+        // const router = useRouter()
         for (const err of graphQLErrors) {
             if (
-                err.message === 'Authentication failed: User matching query does not exist.' ||
+                err.message ===
+                    'Authentication failed: User matching query does not exist.' ||
                 err.message === 'Your account is inactive.' ||
-                err.message === 'Authentication failed: Your token is expired.' ||
+                err.message ===
+                    'Authentication failed: Your token is expired.' ||
                 err.message === 'Invalid authorization header format.' ||
-                err.message === 'You are not authenticated.' ||
-                err.message === 'You do not have the required permissions to access this resource'
+                err.message === 'You are not authenticated.'
+           
             ) {
-                localStorage.removeItem(JWT_TOKEN_KEY); // Remove token
-                localStorage.removeItem(ROLE_KEY); // Remove role
+            //    alert(err.message)
+               if (window){
+                    window.location.href = '/login'
+               }
             }
         }
     }
     if (networkError) console.error(`[Network error]: ${networkError}`);
+    return forward(operation);
 });
 
 const createApolloClient = () => {
@@ -57,5 +70,3 @@ const createApolloClient = () => {
 }
 
 export default createApolloClient;
-
-

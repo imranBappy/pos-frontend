@@ -13,17 +13,15 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Form } from "@/components/ui/form"
 
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { LOGIN_USER } from "@/graphql/accounts"
-import { JWT_TOKEN_KEY, ROLE_KEY } from "@/constants/auth.constants"
+import { useLazyQuery } from '@apollo/client';
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
 import { TextField } from "@/components/input"
 import PasswordField from "@/components/input/password-field"
 import { OUTLETS_QUERY } from "@/graphql/outlet/queries"
-import { ADMIN, CUSTOMER } from "@/constants/role.constants"
 import useStore from "@/stores"
 import { OUTLET_TYPE } from "@/graphql/outlet/types"
+import { signIn } from 'next-auth/react';
 
 
 const formSchema = z.object({
@@ -40,7 +38,6 @@ function LoginForm() {
   const { toast } = useToast()
   const router = useRouter()
   const loadOutlet = useStore((store) => store.loadOutlet)
-  const login = useStore((store) => store.login)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,56 +52,39 @@ function LoginForm() {
     onCompleted(data) {
       const outlets = data?.outlets?.edges?.map((item: { node: OUTLET_TYPE }) => item.node)
       loadOutlet(outlets);
-      router.push('/orders/pos')
     },
     fetchPolicy: "no-cache",
   });
 
 
-  const [userLogin, { loading }] = useMutation(LOGIN_USER, {
-    onCompleted: async (res) => {
-      const { token, user, message } = res.loginUser;
 
-      localStorage.setItem(JWT_TOKEN_KEY, token)
-      localStorage.setItem(ROLE_KEY, user.role.name)
-      login(token, user?.role?.name)
+async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+        const res = await signIn('credentials', {
+            ...values,
+            redirect: false, // Prevent automatic redirection
+        });
 
-      if (user.role.name === ADMIN) {
-        await getOutlets()
-      }
-
-      if (user.role.name != ADMIN && user.role.name != CUSTOMER) {
-        const outlet = user?.outlet
-        if (outlet) {
-          loadOutlet([outlet])
-          router.push('/orders/pos')
+        if (res?.error) {
+            throw new Error(res.error);
         }
-      }
 
-      toast({
-        variant: 'default',
-        description: message,
-      })
+        await getOutlets(); // Fetch outlets after successful login
+        router.push('/dashboard')
 
-    },
-    onError: (err) => {
-      console.log(err);
-      toast({
-        variant: 'destructive',
-        description: err.message,
-      })
+        toast({
+            variant: 'default',
+            description: 'Login successful!',
+        });
+    } catch (error) {
+        toast({
+            variant: 'destructive',
+            title: 'Login Failed',
+            description: (error as Error).message || 'An unknown error occurred.',
+        });
     }
-  })
+}
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    const { email, password } = values;
-    userLogin({
-      variables: {
-        email: email,
-        password: password
-      }
-    })
-  }
 
 
 
@@ -133,7 +113,7 @@ function LoginForm() {
               label="Password"
               placeholder="Password"
             />
-            <Button disabled={loading || outletLoading} type="submit">Submit</Button>
+            <Button disabled={outletLoading} type="submit">Submit</Button>
           </form>
         </Form>
 

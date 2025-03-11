@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import ItemStockStatus from "@/components/item-stock-status";
 import { itemStockStatus } from "@/lib/utils";
+import Link from "next/link";
 
 interface Category {
     name: string;
@@ -18,7 +19,16 @@ export const itemColumns: ColumnDef<ITEM_TYPE>[] = [
         header: 'Name',
         cell: ({ row }) => (
             <div className="capitalize flex gap-2 items-center min-w-20 ">
-                <p className=" text-base">{row.getValue('name')}</p>
+                <Button
+                    variant={'link'}
+                >
+                    <Link
+                        href={`/items/${row.original.id}/details?itemId=${row.original.id}`}
+                        className=" text-base"
+                    >
+                        {row.getValue('name')}
+                    </Link>
+                </Button>
                 <ItemStockStatus
                     status={itemStockStatus(
                         row.getValue('currentStock'),

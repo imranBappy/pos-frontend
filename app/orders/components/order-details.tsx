@@ -26,7 +26,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import Image from '@/components/ui/image';
-import { ORDER_MUTATION, PAYMENT_TYPE } from '@/graphql/product';
+import { ORDER_CANCEL, ORDER_ITEM_TYPE,  PAYMENT_TYPE } from '@/graphql/product';
 import { ORDER_STATUSES } from '@/constants/order.constants';
 import { Loading } from '@/components/ui';
 import { toast } from '@/hooks/use-toast';
@@ -38,21 +38,6 @@ import PaymentModal from './order-payment/payment-modal';
 import Link from 'next/link';
 import Button from '@/components/button';
 
-
-interface ProductNode {
-    node: {
-        id: string;
-        product: {
-            name: string;
-            images: string;
-            price: number;
-        };
-        quantity: number;
-        price: number;
-        discount: number;
-        vat: number;
-    };
-}
 export const OrderDetails = ({ orderId }: { orderId: string }) => {
     const { data, loading, error } = useQuery(ORDER_QUERY, {
         variables: { id: Number(orderId) },
@@ -63,24 +48,14 @@ export const OrderDetails = ({ orderId }: { orderId: string }) => {
     });
 
 
-    const [updateStatus] = useMutation(ORDER_MUTATION, {
+    const [updateStatus] = useMutation(ORDER_CANCEL, {
         refetchQueries: [{ query: ORDER_QUERY, variables: { id: orderId } }],
     });
 
-    const handleStatusChange = async (newStatus: string) => {
+    const handleStatusChange = async () => {
         try {
             await updateStatus({
-                variables: {
-                    id: orderId,
-                    status: newStatus,
-                    paymentMethod: order?.paymentMethod,
-                    finalAmount: order?.finalAmount,
-                    amount: order?.finalAmount,
-                    due: order?.due,
-                    type: order?.type,
-                    user: order?.user?.id,
-                    outlet: order?.outlet?.id,
-                },
+                variables: { orderId: data.order.orderId },
             });
             toast({
                 title: 'Order Status Updated',
@@ -440,18 +415,20 @@ export const OrderDetails = ({ orderId }: { orderId: string }) => {
                                 <TableHead className="text-[13px] font-medium uppercase tracking-wider">
                                     Discount
                                 </TableHead>
+
+                                <TableHead className="text-[13px] font-medium uppercase tracking-wider">
+                                    Ingredients
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {order?.items?.edges?.map(
-                                ({ node }: ProductNode) => (
+                                ({ node }: { node: ORDER_ITEM_TYPE }) => (
                                     <TableRow key={node.id}>
                                         <TableCell className="py-4">
                                             <div className="flex items-center gap-3">
                                                 <Image
-                                                    src={getThumblain(
-                                                        node?.product?.images
-                                                    )}
+                                                    src={getThumblain(node?.product?.images || '')}
                                                     alt={node?.product?.name}
                                                     width={48}
                                                     height={48}
@@ -475,10 +452,28 @@ export const OrderDetails = ({ orderId }: { orderId: string }) => {
                                             $
                                             {toFixed(
                                                 discount(
-                                                    node.discount,
+                                                    node?.discount ||0,
                                                     node.vat
                                                 )
                                             )}
+                                        </TableCell>
+
+                                        <TableCell>
+                                            {node?.orderIngredients?.edges
+                                                .map(
+                                                    (ing) =>
+                                                        `${
+                                                            ing.node?.item?.name.split(
+                                                                ' '
+                                                            )[0]
+                                                        } (${toFixed(
+                                                            ing?.node?.quantity
+                                                        )} ${
+                                                            ing.node?.item.unit
+                                                                .name
+                                                        })`
+                                                )
+                                                .join(', ')}
                                         </TableCell>
                                     </TableRow>
                                 )

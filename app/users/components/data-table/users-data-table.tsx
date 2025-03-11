@@ -29,7 +29,6 @@ export interface UserFilterState {
     search: string
     gender: string
     isActive: string
-    role: number | undefined
     dateRange?: DateRange
 }
 
@@ -47,13 +46,13 @@ export const UsersDataTable = () => {
         search: '',
         gender: 'ALL',
         isActive: 'ALL',
-        role: undefined,
         dateRange: undefined,
     })
     const { toast } = useToast()
 
     const { loading, data: res, fetchMore } = useQuery(USERS_QUERY, {
         variables: {
+            isStaff:false,
             offset: pagination.pageIndex * pagination.pageSize,
             first: pagination.pageSize,
             ...filters,

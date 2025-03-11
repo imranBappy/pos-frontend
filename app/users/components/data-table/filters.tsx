@@ -21,10 +21,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { UserFilterState } from "./users-data-table"
-import { useQuery } from "@apollo/client"
-import { ROLES_QUERY } from "@/graphql/accounts/queries"
-import { ROLE_TYPE } from "@/graphql/accounts"
-import { OPTION_TYPE } from "@/components/input"
 
 
 interface FiltersProps {
@@ -38,12 +34,6 @@ export function TableFilters({ filters, onFilterChange }: FiltersProps) {
   const [debouncedSearch, setDebouncedSearch] = useState(filters.search)
   const [date, setDate] = useState<DateRange | undefined>(undefined)
 
-  const { data: roles_data } = useQuery(ROLES_QUERY)
-
-  const roles: OPTION_TYPE[] = roles_data?.roles?.map((role: ROLE_TYPE) => ({
-    value: role.id,
-    label: role.name
-  }))
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -70,14 +60,13 @@ export function TableFilters({ filters, onFilterChange }: FiltersProps) {
     onFilterChange('search')('')
     onFilterChange('gender')('ALL')
     onFilterChange('isActive')('ALL')
-    onFilterChange('role')(undefined)
     onFilterChange('dateRange')(undefined)
     setDate(undefined);
 
   };
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
         <div className="space-y-2">
           <Label>Search</Label>
           <Input
@@ -104,22 +93,6 @@ export function TableFilters({ filters, onFilterChange }: FiltersProps) {
           </Select>
         </div>
 
-        <div className="space-y-2">
-          <Label>Role</Label>
-          <Select
-            value={filters.role?.toString()}
-            onValueChange={handleFilterChange('role')}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select role" />
-            </SelectTrigger>
-            <SelectContent>
-              {
-                roles?.map((role) => (<SelectItem key={role.value} value={role.value}>{role.label}</SelectItem>))
-              }
-            </SelectContent>
-          </Select>
-        </div>
 
         <div className="space-y-2">
           <Label>Status</Label>

@@ -1,6 +1,4 @@
 "use client"
-import withProtection from "@/HOC/ProtectedRoute"
-import { ADMIN } from "@/constants/role.constants"
 import { FloorTableForm } from "../../components/forms/floor-table-form"
 
 
@@ -11,4 +9,4 @@ function CardWithForm() {
         </div>
     )
 }
-export default withProtection(CardWithForm, [ADMIN])
+export default CardWithForm;

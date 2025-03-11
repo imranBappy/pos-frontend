@@ -1,6 +1,5 @@
 "use client"
-import withProtection from "@/HOC/ProtectedRoute"
-import { ADMIN, MANAGER } from "@/constants/role.constants"
+
 import Pos from "../components/pos/pos"
 
 
@@ -12,4 +11,4 @@ function POS() {
         </div>
     )
 }
-export default withProtection(POS, [ADMIN, MANAGER,])
+export default POS;

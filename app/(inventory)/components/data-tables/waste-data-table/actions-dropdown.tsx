@@ -10,11 +10,10 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useToast } from "@/hooks/use-toast";
-import Link from "next/link";
 import { useMutation } from "@apollo/client";
-import { DELETE_SUPPLIER_MUTATION } from "@/graphql/supplier/mutations";
-import { SUPPLIERS_QUERY } from "@/graphql/supplier/queries";
 import { WASTE_TYPE } from "@/graphql/waste/types";
+import { DELETE_WASTE } from "@/graphql/waste/mutations";
+import { WASTES_QUERY } from "@/graphql/waste/queries";
 
 interface ActionsDropdownProps {
     item: WASTE_TYPE;
@@ -22,15 +21,17 @@ interface ActionsDropdownProps {
 
 export function ActionsDropdown({ item }: ActionsDropdownProps) {
     const { toast } = useToast()
-    const [deleteSupplier, { loading }] = useMutation(DELETE_SUPPLIER_MUTATION, {
-        refetchQueries: [{
-            query: SUPPLIERS_QUERY,
-            variables: {
-                offset: 0,
-                first: 10,
-            }
-        }],
-        awaitRefetchQueries: true
+    const [deleteSupplier, { loading }] = useMutation(DELETE_WASTE, {
+        refetchQueries: [
+            {
+                query: WASTES_QUERY,
+                variables: {
+                    offset: 0,
+                    first: 10,
+                },
+            },
+        ],
+        awaitRefetchQueries: true,
     });
 
     const handleDeleteSupplier = async (supplierId: string) => {
@@ -66,12 +67,10 @@ export function ActionsDropdown({ item }: ActionsDropdownProps) {
             <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuItem disabled={loading} onClick={() => handleDeleteSupplier(item.id)}>
-                    Delete Supplier
+                    Delete Waste
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                    <Link href={`/suppliers/${item.id}`}>Edit Supplier</Link>
-                </DropdownMenuItem>
+              
             </DropdownMenuContent>
         </DropdownMenu>
     )

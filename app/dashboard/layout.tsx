@@ -1,12 +1,14 @@
 import DashboardLayout from '@/layout/DashboardLayout';
 import MainLayout from '@/layout/MainLayout';
+import { getSession } from 'next-auth/react';
 import React from 'react';
-const Layout = ({ children }: { children: React.ReactNode }) => {
-   return (
-       <MainLayout>
-           <DashboardLayout>{children}</DashboardLayout>
-       </MainLayout>
-   );
+const Layout = async ({ children }: { children: React.ReactNode }) => {
+    const session = await getSession();
+    return (
+        <MainLayout session={session}>
+            <DashboardLayout>{children}</DashboardLayout>
+        </MainLayout>
+    );
 };
 
 export default Layout;

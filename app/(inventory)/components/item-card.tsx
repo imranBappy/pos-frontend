@@ -19,6 +19,7 @@ const ItemCard = ({ onClick, selected, item }: PROPS_TYPE) => {
         currentStock,
         sku,
     }: ITEM_TYPE = item;
+    
 
     return (
         <Card

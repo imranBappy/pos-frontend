@@ -16,41 +16,56 @@ export const ME_QUERY = gql`
     }
 `;
 
-export const USERS_QUERY = gql`query MyQuery($role: Decimal, $search: String, $offset: Int, $gender: String, $createdAt: DateTime, $createdAtStart: Date, $createdAtEnd: Date, $isActive: Boolean = true, $orderBy: String, $first: Int ) {
-  users(
-    role: $role
-    search: $search
-    offset: $offset
-    gender: $gender
-    createdAt: $createdAt
-    createdAtStart: $createdAtStart
-    createdAtEnd: $createdAtEnd
-    isActive: $isActive
-    orderBy: $orderBy
-    first: $first
-  ) {
-    totalCount
-    edges {
-      node {
-        id
-        email
-        createdAt
-        gender
-        isActive
-        isVerified
-        name
-        photo
-        privacyPolicyAccepted
-        role {
-          id
-          name
+export const USERS_QUERY = gql`
+    query MyQuery(
+        $role: Decimal
+        $search: String
+        $offset: Int
+        $gender: String
+        $createdAt: DateTime
+        $createdAtStart: Date
+        $createdAtEnd: Date
+        $isActive: Boolean = true
+        $orderBy: String
+        $first: Int
+        $isStaff: Boolean
+    ) {
+        users(
+            role: $role
+            search: $search
+            offset: $offset
+            gender: $gender
+            createdAt: $createdAt
+            createdAtStart: $createdAtStart
+            createdAtEnd: $createdAtEnd
+            isActive: $isActive
+            orderBy: $orderBy
+            first: $first
+            isStaff: $isStaff
+        ) {
+            totalCount
+            edges {
+                node {
+                    id
+                    email
+                    createdAt
+                    gender
+                    isActive
+                    isVerified
+                    name
+                    photo
+                    privacyPolicyAccepted
+                    role {
+                        id
+                        name
+                    }
+                    termAndConditionAccepted
+                    phone
+                }
+            }
         }
-        termAndConditionAccepted
-        phone
-      }
     }
-  }
-}`
+`;
 
 export const USER_QUERY = gql`
 query MyQuery($email: String, $id: ID , $phone: String ) {
@@ -152,3 +167,5 @@ export const EMPLOYEE_SEARCH_QUERY = gql`
         }
     }
 `;
+
+ 
