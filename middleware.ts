@@ -16,11 +16,6 @@ export async function middleware(req: NextRequest) {
         secret: process.env.NEXTAUTH_SECRET,
     });
 
-    console.log('token : ', token);
-
- 
-    
-    
 
     // const adminRoutes = ['/users', '/dashboard/product'];
     // const isAdminRoute = adminRoutes.some((route) =>
@@ -35,9 +30,29 @@ export async function middleware(req: NextRequest) {
     //     return NextResponse.redirect(new URL('/403', req.url)); // Redirect to a forbidden page
     // }
 
+    if (req.nextUrl.pathname === '/') return NextResponse.redirect(new URL('/dashboard', req.url));
+
     return NextResponse.next();
 }
 
 export const config = {
-    matcher: [ '/dashobard'],
+    matcher: [
+        '/',
+        '/dashobard',
+        '/item-categories',
+        '/items',
+        '/supplier-invoices',
+        '/supplier-invoices-upload',
+        '/supplier-payments',
+        '/suppliers',
+        '/units',
+        '/wastes',
+        '/floor',
+        '/orders',
+        '/outlets',
+        '/product',
+        '/staffs',
+        '/users',
+    ],
 };
+

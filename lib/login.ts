@@ -45,6 +45,20 @@ export const loginUserFormServer = async (credentials: VARIABLES) => {
                 'Content-Type': 'application/json',
             },
         }).then((res) => res.json());
+        console.log({data},url, {
+            method: 'POST',
+            body: JSON.stringify({
+                query: mutation,
+                variables: {
+                    email: credentials?.email,
+                    password: credentials?.password,
+                },
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        
         if (!data?.data?.loginUser?.success)
             throw new Error('Invalid credentials');
 

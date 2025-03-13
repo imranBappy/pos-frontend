@@ -1,7 +1,6 @@
 import { ADMIN, MANAGER, WAITER, CHEF } from "@/constants/role.constants"
 import {
     Bot,
-    Settings2,
     SquareTerminal,
     Users,
     Store
@@ -161,29 +160,7 @@ export const navbarLinks: NavLinks = {
                 },
             ],
         },
-        {
-            title: 'Settings',
-            url: '#',
-            icon: Settings2,
-            items: [
-                {
-                    title: 'General',
-                    url: '#',
-                },
-                {
-                    title: 'Team',
-                    url: '#',
-                },
-                {
-                    title: 'Billing',
-                    url: '#',
-                },
-                {
-                    title: 'Limits',
-                    url: '#',
-                },
-            ],
-        },
+        
     ],
     [MANAGER]: [
         {

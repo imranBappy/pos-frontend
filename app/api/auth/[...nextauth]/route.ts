@@ -41,10 +41,9 @@ const authOptions: NextAuthOptions = {
                         email: credentials?.email || '',
                         password: credentials?.password || '',
                     });
-                
-
-                    if (!data) throw new Error('Invalid email or password.');
                     
+                
+                    if (!data) throw new Error('Invalid email or password.');
                     return {
                             id: data.id,
                             name: data.name,
